@@ -15,9 +15,14 @@ import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -81,26 +86,20 @@ fun QRScreen(navController: NavController) {
     ) {
         Text(
             text = "QR코드 인식",
-            style = MaterialTheme.typography.h6.copy(fontWeight = FontWeight.Bold),
+            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(top = 20.dp),
-            color = androidx.compose.material3.MaterialTheme.colorScheme.onSurface, // 다크 모드에 맞는 텍스트 색상
+            color = MaterialTheme.colorScheme.onSurface, // 다크 모드에 맞는 텍스트 색상
             textAlign = TextAlign.Center
         )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
         Box(
             modifier = Modifier
                 .weight(1f)
                 .padding(30.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .let { modifier ->
-                    if (isCameraPermissionGranted && isCameraActive) {
-                        modifier.border(BorderStroke(2.dp, Color.Blue), shape = RoundedCornerShape(5.dp))
-                    } else {
-                        modifier // 카메라가 꺼져 있을 때는 border 없앰
-                    }
-                },
+                .border(BorderStroke(2.dp, if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C)) , shape = RoundedCornerShape(5.dp)),
             contentAlignment = Alignment.Center
         ) {
             if (isCameraPermissionGranted && isCameraActive) {
@@ -134,7 +133,8 @@ fun QRScreen(navController: NavController) {
                             showAlert = true
                             isCameraActive = false // QR 코드 인식 후 카메라 종료
                         }
-                    }
+                    },
+                    modifier = Modifier.fillMaxSize()
                 )
             } else if (!isCameraActive) {
                 Text("다시 QR코드를 인식하시려면 버튼을 눌러주세요!", textAlign = TextAlign.Center)
@@ -143,15 +143,16 @@ fun QRScreen(navController: NavController) {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(50.dp))
 
         Button(
+            colors = ButtonDefaults.buttonColors(containerColor = if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C)),
             onClick = {
                 if (!isCameraActive) {
                     isCameraActive = true // 카메라 활성화
                 }
             },
-            modifier = Modifier.padding(bottom = 16.dp)
+            modifier = Modifier.padding(bottom = 16.dp),
         ) {
             Text(text = if (isCameraActive) "QR코드 인식 중..." else "QR코드 인식 시작")
         }
@@ -172,7 +173,7 @@ fun QRScreen(navController: NavController) {
 }
 
 @Composable
-fun CameraPreview(onBarcodeScanned: (String) -> Unit) {
+fun CameraPreview(onBarcodeScanned: (String) -> Unit, modifier: Modifier = Modifier) {
     val localContext = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(localContext) }
     val barcodeScanner: BarcodeScanner = BarcodeScanning.getClient(
@@ -210,9 +211,11 @@ fun CameraPreview(onBarcodeScanned: (String) -> Unit) {
                 }
 
             }, ContextCompat.getMainExecutor(localContext))
-        }
+        },
+        modifier = modifier // 전달된 modifier 사용
     )
 }
+
 
 @OptIn(ExperimentalGetImage::class)
 private fun processImageProxy(barcodeScanner: BarcodeScanner, imageProxy: ImageProxy, onBarcodeScanned: (String) -> Unit) {

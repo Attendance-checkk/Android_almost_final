@@ -24,8 +24,7 @@ import com.example.attendancecheckandroidtest.R
 fun TimestampView() {
     Column(
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(16.dp), // 내부 여백 설정
+            .fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally, // 수평 정렬
         verticalArrangement = Arrangement.Center // 중앙 정렬
     ) {

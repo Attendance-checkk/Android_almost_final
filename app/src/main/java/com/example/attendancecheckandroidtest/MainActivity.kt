@@ -180,6 +180,7 @@ import android.content.pm.PackageManager
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.core.content.ContextCompat
+import androidx.navigation.NavController
 import com.example.attendancecheckandroidtest.data.models.NotificationManager
 import com.example.attendancecheckandroidtest.ui.theme.screens.*
 
@@ -287,10 +288,15 @@ class MainActivity : ComponentActivity() {
                         refreshEvents = { Log.d("refreshEvents", "refreshEvents") })
                 }
                 composable("caution") {
-                    CautionView(onClose = { navController.popBackStack() }, onTabSelected = { selectedTabIndex = it })
+                    CautionScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
                 }
                 composable("menu") {
-                    MenuScreen(navController = navController, onTabSelected = { selectedTabIndex = it }, isNotificationEnabled = isNotificationEnabled, deleteAccount = { /* Handle account deletion */ })
+                    MenuScreen(navController = navController, onTabSelected = { selectedTabIndex = it }, isNotificationEnabled = isNotificationEnabled, deleteAccount = {  })
                 }
                 composable("qr") { QRScreen(navController) }
                 composable("mapDetail") { MapDetailScreen(navController) }

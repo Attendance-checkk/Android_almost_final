@@ -1,10 +1,12 @@
 package com.example.attendancecheckandroidtest.ui.theme.components
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -102,24 +104,28 @@ fun TimelineEventItem(event: Event, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 2.dp)
+            .background(
+                MaterialTheme.colorScheme.surface
+            )
             .clickable { onClick() },
         shape = RoundedCornerShape(15.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color.Gray, shape = RoundedCornerShape(15.dp))
+                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(15.dp))
                 .background(color = MaterialTheme.colorScheme.surface) // 테마에 맞는 배경색 적용
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 EventImage(event)
 
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(15.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     val startTime = iso8601ToDate(event.eventStartTime)
@@ -182,13 +188,22 @@ private fun EventImage(event: Event) {
         else -> R.drawable.sch_stamp // 기본 이미지
     }
 
-    Box(modifier = Modifier.size(60.dp)) {
+    Box(modifier = Modifier
+        .size(60.dp)
+        .border(
+            BorderStroke(1.dp, if (isSystemInDarkTheme()) Color.Transparent else Color.LightGray),
+            shape = RoundedCornerShape(8.dp)
+        )
+        .background(color = Color.White, shape = RoundedCornerShape(8.dp))
+    ) {
         Image(
             painter = painterResource(id = imageName),
             contentDescription = event.eventName,
             modifier = Modifier
-                .fillMaxSize()
+                .size((60 * 0.8).dp)
                 .clip(RoundedCornerShape(8.dp))
+                .background(Color.Transparent)
+                .align(Alignment.Center)
         )
     }
 }

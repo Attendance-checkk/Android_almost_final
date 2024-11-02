@@ -2,6 +2,7 @@
 package com.example.attendancecheckandroidtest.ui.theme.screens
 
 import android.content.Context.MODE_PRIVATE
+import android.content.SharedPreferences
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +44,10 @@ import com.example.attendancecheckandroidtest.data.network.ApiService
 import okhttp3.OkHttpClient
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.activity.compose.BackHandler // 추가된 import
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.nativeKeyCode
+import androidx.compose.ui.input.key.onKeyEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -142,7 +147,15 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 20.dp)
-                .height(62.dp),
+                .height(62.dp)
+                .onKeyEvent { keyEvent ->
+                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+                        focusManager.moveFocus(FocusDirection.Down) // 엔터 시 다음 필드로 이동
+                        true
+                    } else {
+                        false
+                    }
+                },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             isError = errorMessage.isNotEmpty() && studentNumber.isNotEmpty(),
             singleLine = true
@@ -157,7 +170,15 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 2.dp)
-                .height(62.dp),
+                .height(62.dp)
+                .onKeyEvent { keyEvent ->
+                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+                        focusManager.moveFocus(FocusDirection.Down) // 엔터 시 다음 필드로 이동
+                        true
+                    } else {
+                        false
+                    }
+                },
             singleLine = true // 줄바꿈 방지
         )
 
@@ -170,9 +191,30 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 20.dp)
-                .height(62.dp),
+                .height(62.dp)
+                .onKeyEvent { keyEvent ->
+                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+                        // 로그인 버튼 클릭과 같은 동작 수행
+                        focusManager.clearFocus() // 키보드 내림
+                        // 로그인 기능 호출
+                        performLogin(
+                            studentNumber,
+                            name,
+                            selectedDepartment,
+                            password,
+                            navController,
+                            sharedPreferences,
+                            apiService,
+                            onError = { errorMessage = it }
+                        )
+                        true
+                    } else {
+                        false
+                    }
+                },
             visualTransformation = PasswordVisualTransformation(), // 비밀번호 숨김 처리
-            isError = errorMessage.isNotEmpty() && password.isNotEmpty()
+            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
+            singleLine = true
         )
 
         // 오류 메시지 표시
@@ -187,60 +229,77 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
         // 로그인 버튼
         Button(
             onClick = {
-                // 입력 검증
-                when {
-                    studentNumber.isEmpty() -> {
-                        errorMessage = "학번을 입력해주세요."
-                    }
-
-                    studentNumber.length != 8 -> {
-                        errorMessage = "학번 8자리를 입력하세요."
-                    }
-
-                    name.isEmpty() -> {
-                        errorMessage = "이름을 입력해주세요."
-                    }
-
-                    selectedDepartment.isEmpty() -> {
-                        errorMessage = "학과를 선택해주세요."
-                    }
-
-                    password.isEmpty() -> {
-                        errorMessage = "비밀번호를 입력해주세요."
-                    }
-
-                    else -> {
-                        // API를 통해 로그인
-                        apiService.login(
-                            studentNumber,
-                            name,
-                            selectedDepartment,
-                            password, // 비밀번호 추가
-                            onSuccess = { accessToken, refreshToken ->
-                                isLoggedIn.value = true
-                                sharedPreferences.edit().apply {
-                                    putBoolean("isLoggedIn", true)
-                                    putString("userId", studentNumber)
-                                    putString("userName", name)
-                                    putString("department", selectedDepartment)
-                                    putString("access_token", accessToken)
-                                    putString("refresh_token", refreshToken)
-                                    apply()
-                                }
-                                navController.navigate("main")
-                            },
-                            onError = { error ->
-                                errorMessage = error // 에러 메시지 설정
-                            }
-                        )
-                    }
-                }
+                performLogin(
+                    studentNumber,
+                    name,
+                    selectedDepartment,
+                    password,
+                    navController,
+                    sharedPreferences,
+                    apiService,
+                    onError = { errorMessage = it }
+                )
             },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 30.dp)
         ) {
             Text("로그인")
+        }
+    }
+}
+
+private fun performLogin(
+    studentNumber: String,
+    name: String,
+    selectedDepartment: String,
+    password: String,
+    navController: NavController,
+    sharedPreferences: SharedPreferences,
+    apiService: ApiService,
+    onError: (String) -> Unit
+) {
+    // 입력 검증
+    when {
+        studentNumber.isEmpty() -> {
+            onError("학번을 입력해주세요.")
+        }
+        studentNumber.length != 8 -> {
+            onError("학번 8자리를 입력하세요.")
+        }
+        name.isEmpty() -> {
+            onError("이름을 입력해주세요.")
+        }
+        selectedDepartment.isEmpty() -> {
+            onError("학과를 선택해주세요.")
+        }
+        password.isEmpty() -> {
+            onError("비밀번호를 입력해주세요.")
+        }
+        else -> {
+            // API를 통해 로그인
+            apiService.login(
+                studentNumber,
+                name,
+                selectedDepartment,
+                password,
+                onSuccess = { accessToken, refreshToken ->
+                    // 로그인 성공 시 처리
+                    sharedPreferences.edit().apply {
+                        putBoolean("isLoggedIn", true)
+                        putString("userId", studentNumber)
+                        putString("userName", name)
+                        putString("department", selectedDepartment)
+                        putString("access_token", accessToken)
+                        putString("refresh_token", refreshToken)
+                        apply()
+                    }
+                    navController.navigate("main")
+                },
+                onError = { error ->
+                    onError(error) // 에러 메시지 설정
+                }
+            )
         }
     }
 }

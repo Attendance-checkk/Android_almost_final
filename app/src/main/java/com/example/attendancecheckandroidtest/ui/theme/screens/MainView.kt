@@ -1,8 +1,10 @@
 package com.example.attendancecheckandroidtest.ui.theme.screens
 
 import android.util.Log
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -14,6 +16,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.attendancecheckandroidtest.R
@@ -32,7 +35,7 @@ fun MainView(
     refreshEvents: () -> Unit,
     isNotificationEnabled: Boolean // 알림 수신 여부 파라미터 추가
 ) {
-    val tabs = listOf("QR", "지도", "홈", "일정", "메뉴")
+    val tabs = listOf("QR", "일정", "홈", "지도", "메뉴")
     var events by remember { mutableStateOf<List<Event>>(emptyList()) }
     var isLoading by remember { mutableStateOf(true) }
     var errorMessage by remember { mutableStateOf("") }
@@ -72,7 +75,8 @@ fun MainView(
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                backgroundColor = Color.White
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                modifier = Modifier.height(60.dp)
             ) {
                 tabs.forEachIndexed { index, tab ->
                     BottomNavigationItem(
@@ -80,16 +84,24 @@ fun MainView(
                             Icon(
                                 painter = painterResource(id = when (tab) {
                                     "QR" -> R.drawable.ic_qr
-                                    "지도" -> R.drawable.ic_map
-                                    "홈" -> R.drawable.ic_home
                                     "일정" -> R.drawable.ic_calendar
+                                    "홈" -> R.drawable.ic_home
+                                    "지도" -> R.drawable.ic_map
                                     "메뉴" -> R.drawable.ic_menu
                                     else -> R.drawable.ic_home // 기본 아이콘 설정
                                 }),
-                                contentDescription = tab
+                                contentDescription = tab,
+                                tint = if (selectedTabIndex == index) if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C) else Color.Gray
                             )
                         },
-                        label = { Text(tab) },
+                        label = {
+                            Text(
+                                tab,
+                                color = if (selectedTabIndex == index) if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C) else Color.Gray, // 선택된 탭의 텍스트 색상 설정
+                                modifier = Modifier
+                                    .padding(top = 10.dp)
+                            )
+                        },
                         selected = selectedTabIndex == index,
                         onClick = { onTabSelected(index) }
                     )
@@ -100,7 +112,10 @@ fun MainView(
         Column(modifier = Modifier.padding(innerPadding)) {
             when (selectedTabIndex) {
                 0 -> QRScreen(navController)
-                1 -> MapScreen(navController)
+                1 -> CalendarScreen(events, navController, isTimelineView) { newValue ->
+                    fetchEvents()
+                    onTimelineViewChange(newValue) // 상태 업데이트
+                }
                 2 -> {
                     if (isLoading) {
                         Text(
@@ -125,10 +140,7 @@ fun MainView(
                         }
                     }
                 }
-                3 -> CalendarScreen(events, navController, isTimelineView) { newValue ->
-                    fetchEvents()
-                    onTimelineViewChange(newValue) // 상태 업데이트
-                }
+                3 -> MapScreen(navController)
                 4 -> MenuScreen(
                     navController = navController,
                     deleteAccount = {

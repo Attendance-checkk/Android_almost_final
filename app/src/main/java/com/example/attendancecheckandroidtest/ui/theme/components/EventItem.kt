@@ -180,10 +180,12 @@
 package com.example.attendancecheckandroidtest.ui.theme.components
 
 import android.text.format.DateFormat
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -194,9 +196,17 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -226,24 +236,28 @@ fun EventItem(event: Event, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 2.dp)
+            .background(
+                MaterialTheme.colorScheme.surface
+            )
             .clickable { onClick() },
         shape = RoundedCornerShape(15.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .border(1.dp, Color.Gray, shape = RoundedCornerShape(15.dp))
+                .border(1.dp, Color.LightGray, shape = RoundedCornerShape(15.dp))
                 .background(color = MaterialTheme.colorScheme.surface) // 다크 모드에 맞는 배경색
         ) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.surface)
                     .padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 EventImage(event)
 
-                Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.width(15.dp))
 
                 Column(modifier = Modifier.weight(1f)) {
                     val startTime = iso8601ToDate(event.eventStartTime)
@@ -269,6 +283,16 @@ fun EventItem(event: Event, onClick: () -> Unit) {
                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.onSurface) // 텍스트 색상 적용
                     )
                 }
+
+                Spacer(modifier = Modifier)
+
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                    contentDescription = "오른쪽 꺾쇠",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .padding(start = 8.dp)
+                )
             }
         }
     }
@@ -288,14 +312,23 @@ private fun EventImage(event: Event) {
     val context = LocalContext.current
     val resId = context.resources.getIdentifier(imageName, "drawable", context.packageName)
 
-    Box(modifier = Modifier.size(60.dp)) {
+    Box(modifier = Modifier
+        .size(60.dp)
+        .border(
+            BorderStroke(1.dp, if (isSystemInDarkTheme()) Color.Transparent else Color.LightGray),
+            shape = RoundedCornerShape(8.dp)
+        )
+        .background(color = Color.White, shape = RoundedCornerShape(8.dp))
+    ) {
         Image(
             painter = if (resId != 0) painterResource(id = resId) else painterResource(id = R.drawable.sch_stamp), // 기본 이미지
             contentDescription = event.eventName,
             modifier = Modifier
-                .fillMaxSize()
+                .size((60 * 0.8).dp)
                 .clip(RoundedCornerShape(8.dp))
-                .graphicsLayer(alpha = if (event.participants?.isNotEmpty() == true) 0.4f else 1.0f)
+                .background(Color.Transparent)
+                .align(Alignment.Center)
+                .graphicsLayer(alpha = if (event.participants?.isNotEmpty() == true) 0.0f else 1.0f)
         )
 
         // 로고 표시
@@ -304,7 +337,7 @@ private fun EventImage(event: Event) {
                 painter = painterResource(id = R.drawable.sch_stamp),
                 contentDescription = "SCH 로고",
                 modifier = Modifier
-                    .size(60.dp)
+                    .size((60 * 0.8).dp)
                     .align(Alignment.Center) // Box 내에서 중앙에 위치
             )
         }

@@ -107,6 +107,8 @@ import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -139,7 +141,40 @@ fun MapDetailScreen(navController: NavController) {
 
     Box(
         contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize().background(Color.Gray)
+        modifier = Modifier
+            .fillMaxSize()
+            .background(if (isSystemInDarkTheme()) MaterialTheme.colorScheme.background else Color.Gray)
+            .pointerInput(Unit) {
+                detectTapGestures(
+                    onDoubleTap = {
+                        scale = if (scale > 1.0) 1.0f else 1.7f
+                        offsetX = 0f
+                        offsetY = 0f
+                    }
+                )
+            }
+            .pointerInput(Unit) {
+                detectTransformGestures { _, pan, zoom, _ ->
+                    scale *= zoom
+                    scale = scale.coerceIn(1f, 1.7f)
+
+                    offsetX += pan.x * scale
+
+                    // offsetY는 항상 0으로 고정
+                    offsetY = 0f
+
+                    // 최대 오프셋 계산
+                    val maxOffsetX = (size.width * scale - size.width) / 2f
+
+                    offsetX = offsetX.coerceIn(-maxOffsetX, maxOffsetX)
+                }
+            }
+            .graphicsLayer(
+                scaleX = scale,
+                scaleY = scale,
+                translationX = offsetX,
+                translationY = offsetY,
+            )
     ) {
         Image(
             painter = painterResource(id = imageRes),
@@ -149,37 +184,7 @@ fun MapDetailScreen(navController: NavController) {
                 .padding(16.dp)
                 .background(Color.Gray, shape = RoundedCornerShape(16.dp))
                 .border(2.dp, Color.Black, shape = RoundedCornerShape(10.dp))
-                .shadow(8.dp, shape = RoundedCornerShape(16.dp))
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onDoubleTap = {
-                            scale = if (scale > 1.0) 1.0f else 1.7f
-                            offsetX = 0f
-                            offsetY = 0f
-                        }
-                    )
-                }
-                .pointerInput(Unit) {
-                    detectTransformGestures { _, pan, zoom, _ ->
-                        scale *= zoom
-                        scale = scale.coerceIn(1f, 1.7f)
-
-                        offsetX += pan.x * scale
-                        offsetY += pan.y * scale
-
-                        val maxOffsetX = (size.width * scale - size.width) / 2f
-                        val maxOffsetY = (size.height * scale - size.height) / 2f
-
-                        offsetX = offsetX.coerceIn(-maxOffsetX, maxOffsetX)
-                        offsetY = offsetY.coerceIn(-maxOffsetY, maxOffsetY)
-                    }
-                }
-                .graphicsLayer(
-                    scaleX = scale,
-                    scaleY = scale,
-                    translationX = offsetX,
-                    translationY = offsetY,
-                ),
+                .shadow(8.dp, shape = RoundedCornerShape(16.dp)),
             contentScale = ContentScale.Fit
         )
 
@@ -189,6 +194,7 @@ fun MapDetailScreen(navController: NavController) {
             contentAlignment = Alignment.BottomCenter
         ) {
             Button(
+                colors = ButtonDefaults.buttonColors(containerColor = if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C)),
                 onClick = {
                     if (isButtonEnabled) {
                         Log.d("MapDetailScreen", "Close button clicked") // 버튼 클릭 로그

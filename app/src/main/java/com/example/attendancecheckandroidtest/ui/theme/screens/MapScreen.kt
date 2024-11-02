@@ -103,7 +103,6 @@ fun MapScreen(navController: NavController) {
                 contentDescription = "지도",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
                     .background(Color.Gray, shape = RoundedCornerShape(16.dp))
                     .border(2.dp, Color.Black, shape = RoundedCornerShape(10.dp))
                     .shadow(8.dp, shape = RoundedCornerShape(16.dp))

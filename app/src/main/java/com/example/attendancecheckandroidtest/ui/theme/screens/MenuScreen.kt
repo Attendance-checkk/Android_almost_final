@@ -7,6 +7,7 @@ import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -45,10 +46,9 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
     val apiService = ApiService(context, client2 = OkHttpClient())
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
+    var errorMessage by remember { mutableStateOf("") }
     var userInfo by remember { mutableStateOf<UserInfo?>(null) }
     var isLoading by remember { mutableStateOf(true) }
-    var errorMessage by remember { mutableStateOf("") }
-    var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var notificationManager = NotificationManager(context)
 
     // 알림 데이터 리스트
@@ -126,7 +126,7 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
                 modifier = Modifier.padding(vertical = 4.dp)
             )
 
-            SectionHeader("알림 설정", color = MaterialTheme.colorScheme.onSurface)
+            SectionHeader("설정", color = MaterialTheme.colorScheme.onSurface)
             // NotificationToggle을 감싸는 Box 추가
             Box(
                 modifier = Modifier
@@ -156,26 +156,10 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
                 )
             }
 
-            Button(
-                onClick = {
-                    onTabSelected(4)
-                    navController.navigate("caution") // CautionView로 이동
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-                    .clip(RoundedCornerShape(12.dp))
-                    .background(Color.Red)
-                    .border(1.dp, Color.Red, shape = RoundedCornerShape(12.dp)),
-                colors = ButtonDefaults.buttonColors(containerColor = Color.Red) // 배경 색상 설정
-            ) {
-                Text(text = "⚠️ 계정 삭제 주의사항", color = Color.White) // 텍스트 색상 설정
-            }
-
             // 계정 삭제 버튼
             Button(
                 onClick = {
-                    showDeleteConfirmationDialog = true
+                    navController.navigate("caution")
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -185,51 +169,12 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
                     .border(1.dp, Color.Red, shape = RoundedCornerShape(12.dp)),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red) // 배경 색상 설정
             ) {
-                Text(text = "🗑️ 계정 삭제", color = Color.White) // 텍스트 색상 설정
+                Text(text = "🗑️ 계정삭제", color = Color.White) // 텍스트 색상 설정
             }
         }
     }
-
-    // 계정 삭제 확인 다이얼로그
-    if (showDeleteConfirmationDialog) {
-        AlertDialog(
-            onDismissRequest = { showDeleteConfirmationDialog = false },
-            title = { Text("계정 삭제 확인") },
-            text = { Text("정말로 계정을 삭제하시겠습니까?") },
-            confirmButton = {
-                TextButton(onClick = {
-                    val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
-                    val accessToken = sharedPreferences.getString("access_token", null)
-
-                    if (accessToken != null) {
-                        apiService.deleteAccount(accessToken, onSuccess = {
-                            // 계정 삭제 후 로그인 상태 업데이트
-                            with(sharedPreferences.edit()) {
-                                putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                                remove("access_token") // 액세스 토큰 삭제
-                                apply()
-                            }
-                            deleteAccount() // 계정 삭제 후 처리
-                            navController.navigate("login") // 로그인 화면으로 이동
-                        }, onError = { error ->
-                            errorMessage = error // 에러 메시지 설정
-                        })
-                    } else {
-                        errorMessage = "액세스 토큰이 없습니다."
-                    }
-                    showDeleteConfirmationDialog = false // 다이얼로그 닫기
-                }) {
-                    Text("확인")
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteConfirmationDialog = false }) {
-                    Text("취소")
-                }
-            }
-        )
-    }
 }
+
 @Composable
 fun UserInfoList(userInfo: UserInfo?) {
     Card(
@@ -285,9 +230,11 @@ fun UserInfoRow(label: String, value: String) {
         )
     }
 }
+
 @Composable
 fun LinkButton(text: String, url: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
+
     Button(
         onClick = {
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
