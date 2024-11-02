@@ -44,6 +44,8 @@ import com.example.attendancecheckandroidtest.data.network.ApiService
 import okhttp3.OkHttpClient
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.activity.compose.BackHandler // 추가된 import
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
@@ -62,6 +64,10 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
     val apiService = ApiService(context, client2 = OkHttpClient()) // OkHttpClient를 인자로 전달하지 않음
+
+    var showAlertDialog by remember { mutableStateOf(false) }
+    var alertDialogTitle by remember { mutableStateOf("") }
+    var alertDialogMessage by remember { mutableStateOf("") }
 
     // BackHandler 추가
     BackHandler {
@@ -89,7 +95,7 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             color = MaterialTheme.colorScheme.onSurface // 다크 모드에 맞는 텍스트 색상
         )
 
-        Image(
+            Image(
             painter = painterResource(id = R.drawable.sch_logo),
             contentDescription = null,
             modifier = Modifier
@@ -186,7 +192,42 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("개인용 비밀번호를 설정 혹은 입력하세요") },
+            label = { Text("비밀번호를 입력해주세요") },
+            shape = RoundedCornerShape(12.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 20.dp)
+                .height(62.dp)
+                .onKeyEvent { keyEvent ->
+                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+                        // 로그인 버튼 클릭과 같은 동작 수행
+                        focusManager.clearFocus() // 키보드 내림
+                        // 로그인 기능 호출
+                        performLogin(
+                            studentNumber,
+                            name,
+                            selectedDepartment,
+                            password,
+                            navController,
+                            sharedPreferences,
+                            apiService,
+                            onError = { errorMessage = it }
+                        )
+                        true
+                    } else {
+                        false
+                    }
+                },
+            visualTransformation = PasswordVisualTransformation(), // 비밀번호 숨김 처리
+            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
+            singleLine = true
+        )
+
+        // 비밀번호 재입력 텍스트 필드
+        OutlinedTextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("비밀번호를 재입력해주세요") },
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
@@ -228,17 +269,31 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
 
         // 로그인 버튼
         Button(
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF26539C)),
             onClick = {
-                performLogin(
+                val validationResult = validateInputs(
                     studentNumber,
                     name,
                     selectedDepartment,
-                    password,
-                    navController,
-                    sharedPreferences,
-                    apiService,
-                    onError = { errorMessage = it }
+                    password
                 )
+
+                if (validationResult.first) {
+                    performLogin(
+                        studentNumber,
+                        name,
+                        selectedDepartment,
+                        password,
+                        navController,
+                        sharedPreferences,
+                        apiService,
+                        onError = { errorMessage = it }
+                    )
+                } else {
+                    alertDialogTitle = "입력 오류"
+                    alertDialogMessage = validationResult.second
+                    showAlertDialog = true
+                }
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -247,6 +302,79 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             Text("로그인")
         }
     }
+
+    // AlertDialog 표시
+    if (showAlertDialog) {
+        AlertDialog(
+            onDismissRequest = { showAlertDialog = false },
+            title = { Text(alertDialogTitle) },
+            text = { Text(alertDialogMessage) },
+            confirmButton = {
+                Button(onClick = { showAlertDialog = false }) {
+                    Text("확인")
+                }
+            }
+        )
+    }
+}
+
+private fun validateInputs(
+    studentNumber: String,
+    name: String,
+    selectedDepartment: String,
+    password: String
+): Pair<Boolean, String> {
+    // 학과 유효성 검사
+    if (selectedDepartment.isEmpty()) {
+        return Pair(false, "학과를 선택해주세요.")
+    }
+
+    // 학번 유효성 검사
+    if (studentNumber.isEmpty()) {
+        return Pair(false, "학번을 입력해주세요.")
+    }
+    if (studentNumber.length != 8) {
+        return Pair(false, "학번은 8자리여야 합니다.")
+    }
+    if (!studentNumber.all { it.isDigit() }) {
+        return Pair(false, "학번은 숫자만 포함해야 합니다.")
+    }
+    if (!studentNumber.startsWith("201") && !studentNumber.startsWith("2020") &&
+        !studentNumber.startsWith("2021") && !studentNumber.startsWith("2022") &&
+        !studentNumber.startsWith("2023") && !studentNumber.startsWith("2024")) {
+        return Pair(false, "학번은 201, 2020, 2021, 2022, 2023, 또는 2024로 시작해야 합니다.")
+    }
+
+    // 이름 유효성 검사
+    if (name.isEmpty()) {
+        return Pair(false, "이름을 입력해주세요.")
+    }
+    if (name.any { it.isDigit() }) {
+        return Pair(false, "이름에 숫자가 포함될 수 없습니다.")
+    }
+    if (name.any { !it.isLetter() && !it.isWhitespace() }) {
+        return Pair(false, "이름에 특수문자가 포함될 수 없습니다.")
+    }
+
+    // 비밀번호 유효성 검사
+    if (password.isEmpty()) {
+        return Pair(false, "비밀번호를 입력해주세요.")
+    }
+    if (!isValidPassword(password)) {
+        return Pair(false, "비밀번호는 대문자, 소문자, 특수문자를 포함하고 8자리 이상이어야 합니다.")
+    }
+
+    return Pair(true, "")
+}
+
+private fun isValidPassword(password: String): Boolean {
+    val upperCaseRegex = Regex("[A-Z]")
+    val lowerCaseRegex = Regex("[a-z]")
+    val specialCharRegex = Regex("[!@#$%^&*(),.?\":{}|<>]")
+    return password.length >= 8 &&
+            upperCaseRegex.containsMatchIn(password) &&
+            lowerCaseRegex.containsMatchIn(password) &&
+            specialCharRegex.containsMatchIn(password)
 }
 
 private fun performLogin(
