@@ -40,8 +40,9 @@ import okhttp3.OkHttpClient
 @Composable
 fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNotificationEnabled: Boolean, deleteAccount: () -> Unit) {
     val context = LocalContext.current
-    val client = OkHttpClient() // OkHttpClient 인스턴스 생성
-    val apiService = ApiService(client, context)
+//    val client = OkHttpClient() // OkHttpClient 인스턴스 생성
+//    val apiService = ApiService(client, context)
+    val apiService = ApiService(context, client2 = OkHttpClient())
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 
     var userInfo by remember { mutableStateOf<UserInfo?>(null) }

@@ -38,7 +38,8 @@ fun MainView(
     var errorMessage by remember { mutableStateOf("") }
 
     val context = LocalContext.current
-    val apiService = ApiService(OkHttpClient(), context)
+    val apiService = ApiService( context,client2 = OkHttpClient())
+//    val apiService = ApiService(context)
     val notificationManager = NotificationManager(context)
 
     // 이벤트를 새로 고치는 함수

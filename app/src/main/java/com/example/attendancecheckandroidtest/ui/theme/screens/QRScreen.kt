@@ -43,8 +43,8 @@ import okhttp3.OkHttpClient
 @Composable
 fun QRScreen(navController: NavController) {
     val context = LocalContext.current
-    val apiService = remember { ApiService(OkHttpClient(), context) }
-
+//    val apiService = remember { ApiService(OkHttpClient(), context) }
+    val apiService = remember { ApiService(context, OkHttpClient()) }
     var qrCodeValue by remember { mutableStateOf("") }
     var isProcessing by remember { mutableStateOf(false) }
     var showAlert by remember { mutableStateOf(false) }
