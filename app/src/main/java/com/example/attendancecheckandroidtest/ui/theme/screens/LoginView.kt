@@ -50,20 +50,646 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
+//    var studentNumber by remember { mutableStateOf("") }
+//    var name by remember { mutableStateOf("") }
+//    var major by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") } // 비밀번호 상태 변수 추가
+//    var errorMessage by remember { mutableStateOf("") }
+//
+//    // LocalContext 가져오기
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
+//    val apiService = ApiService(context, client2 = OkHttpClient()) // OkHttpClient를 인자로 전달하지 않음
+//
+//    var showAlertDialog by remember { mutableStateOf(false) }
+//    var alertDialogTitle by remember { mutableStateOf("") }
+//    var alertDialogMessage by remember { mutableStateOf("") }
+//
+//    // BackHandler 추가
+//    BackHandler {
+//        // 아무 동작도 하지 않음으로써 뒤로가기 버튼을 비활성화
+//    }
+//
+//    val focusManager = LocalFocusManager.current
+//
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(30.dp)
+//            .pointerInput(Unit) {
+//                detectTapGestures(onTap = {
+//                    focusManager.clearFocus() // 화면 터치 시 키보드 내림
+//                })
+//            },
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        verticalArrangement = Arrangement.Center
+//    ) {
+//        Text(
+//            text = "👋 환영합니다!",
+//            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+//            modifier = Modifier.padding(bottom = 40.dp),
+//            color = MaterialTheme.colorScheme.onSurface // 다크 모드에 맞는 텍스트 색상
+//        )
+//
+//            Image(
+//            painter = painterResource(id = R.drawable.sch_logo),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clip(RoundedCornerShape(15.dp))
+//        )
+//
+//        // 학과 목록 정의
+//        val departments = listOf("컴퓨터소프트웨어공학과", "정보보호학과", "의료IT공학과", "AI·빅데이터학과", "사물인터넷학과", "메타버스&게임학과")
+//        var selectedDepartment by remember { mutableStateOf("") }
+//        var expanded by remember { mutableStateOf(false) }
+//
+//        // 학과 선택 드롭다운 메뉴
+//        ExposedDropdownMenuBox(
+//            expanded = expanded,
+//            onExpandedChange = { expanded = !expanded }
+//        ) {
+//            OutlinedTextField(
+//                value = selectedDepartment,
+//                onValueChange = {},
+//                readOnly = true,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .menuAnchor()
+//                    .padding(top = 50.dp)
+//                    .height(62.dp),
+//                label = { Text("학과") },
+//                shape = RoundedCornerShape(12.dp),
+//                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
+//            )
+//
+//            // 드롭다운 메뉴
+//            ExposedDropdownMenu(
+//                expanded = expanded,
+//                onDismissRequest = { expanded = false }
+//            ) {
+//                departments.forEach { department ->
+//                    DropdownMenuItem(
+//                        text = { Text(department) },
+//                        onClick = {
+//                            selectedDepartment = department
+//                            expanded = false
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//
+//        // 학번 입력 텍스트 필드
+//        OutlinedTextField(
+//            value = studentNumber,
+//            onValueChange = { studentNumber = it },
+//            label = { Text("학번 입력") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 20.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        focusManager.moveFocus(FocusDirection.Down) // 엔터 시 다음 필드로 이동
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//            isError = errorMessage.isNotEmpty() && studentNumber.isNotEmpty(),
+//            singleLine = true
+//        )
+//
+//        // 이름 입력 텍스트 필드
+//        OutlinedTextField(
+//            value = name,
+//            onValueChange = { name = it },
+//            label = { Text("이름 입력") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 2.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        focusManager.moveFocus(FocusDirection.Down) // 엔터 시 다음 필드로 이동
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            singleLine = true // 줄바꿈 방지
+//        )
+//
+//        // 비밀번호 입력 텍스트 필드
+//        OutlinedTextField(
+//            value = password,
+//            onValueChange = { password = it },
+//            label = { Text("비밀번호를 입력해주세요") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 20.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        // 로그인 버튼 클릭과 같은 동작 수행
+//                        focusManager.clearFocus() // 키보드 내림
+//                        // 로그인 기능 호출
+//                        performLogin(
+//                            studentNumber,
+//                            name,
+//                            selectedDepartment,
+//                            password,
+//                            navController,
+//                            sharedPreferences,
+//                            apiService,
+//                            onError = { errorMessage = it }
+//                        )
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            visualTransformation = PasswordVisualTransformation(), // 비밀번호 숨김 처리
+//            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
+//            singleLine = true
+//        )
+//
+//        // 비밀번호 재입력 텍스트 필드
+//        OutlinedTextField(
+//            value = password,
+//            onValueChange = { password = it },
+//            label = { Text("비밀번호를 재입력해주세요") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 20.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        // 로그인 버튼 클릭과 같은 동작 수행
+//                        focusManager.clearFocus() // 키보드 내림
+//                        // 로그인 기능 호출
+//                        performLogin(
+//                            studentNumber,
+//                            name,
+//                            selectedDepartment,
+//                            password,
+//                            navController,
+//                            sharedPreferences,
+//                            apiService,
+//                            onError = { errorMessage = it }
+//                        )
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            visualTransformation = PasswordVisualTransformation(), // 비밀번호 숨김 처리
+//            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
+//            singleLine = true
+//        )
+//
+//        // 오류 메시지 표시
+//        if (errorMessage.isNotEmpty()) {
+//            Text(
+//                text = errorMessage,
+//                color = Color.Red,
+//                modifier = Modifier.padding(top = 8.dp)
+//            )
+//        }
+//
+//        // 로그인 버튼
+//        Button(
+//            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF26539C)),
+//            onClick = {
+//                val validationResult = validateInputs(
+//                    studentNumber,
+//                    name,
+//                    selectedDepartment,
+//                    password
+//                )
+//
+//                if (validationResult.first) {
+//                    performLogin(
+//                        studentNumber,
+//                        name,
+//                        selectedDepartment,
+//                        password,
+//                        navController,
+//                        sharedPreferences,
+//                        apiService,
+//                        onError = { errorMessage = it }
+//                    )
+//                } else {
+//                    alertDialogTitle = "입력 오류"
+//                    alertDialogMessage = validationResult.second
+//                    showAlertDialog = true
+//                }
+//            },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 30.dp)
+//        ) {
+//            Text("로그인")
+//        }
+//    }
+//
+//    // AlertDialog 표시
+//    if (showAlertDialog) {
+//        AlertDialog(
+//            onDismissRequest = { showAlertDialog = false },
+//            title = { Text(alertDialogTitle) },
+//            text = { Text(alertDialogMessage) },
+//            confirmButton = {
+//                Button(onClick = { showAlertDialog = false }) {
+//                    Text("확인")
+//                }
+//            }
+//        )
+//    }
+//}
+//
+//private fun validateInputs(
+//    studentNumber: String,
+//    name: String,
+//    selectedDepartment: String,
+//    password: String
+//): Pair<Boolean, String> {
+//    // 학과 유효성 검사
+//    if (selectedDepartment.isEmpty()) {
+//        return Pair(false, "학과를 선택해주세요.")
+//    }
+//
+//    // 학번 유효성 검사
+//    if (studentNumber.isEmpty()) {
+//        return Pair(false, "학번을 입력해주세요.")
+//    }
+//    if (studentNumber.length != 8) {
+//        return Pair(false, "학번은 8자리여야 합니다.")
+//    }
+//    if (!studentNumber.all { it.isDigit() }) {
+//        return Pair(false, "학번은 숫자만 포함해야 합니다.")
+//    }
+//    if (!studentNumber.startsWith("201") && !studentNumber.startsWith("2020") &&
+//        !studentNumber.startsWith("2021") && !studentNumber.startsWith("2022") &&
+//        !studentNumber.startsWith("2023") && !studentNumber.startsWith("2024")) {
+//        return Pair(false, "학번은 201, 2020, 2021, 2022, 2023, 또는 2024로 시작해야 합니다.")
+//    }
+//
+//    // 이름 유효성 검사
+//    if (name.isEmpty()) {
+//        return Pair(false, "이름을 입력해주세요.")
+//    }
+//    if (name.any { it.isDigit() }) {
+//        return Pair(false, "이름에 숫자가 포함될 수 없습니다.")
+//    }
+//    if (name.any { !it.isLetter() && !it.isWhitespace() }) {
+//        return Pair(false, "이름에 특수문자가 포함될 수 없습니다.")
+//    }
+//
+//    // 비밀번호 유효성 검사
+//    if (password.isEmpty()) {
+//        return Pair(false, "비밀번호를 입력해주세요.")
+//    }
+//    if (!isValidPassword(password)) {
+//        return Pair(false, "비밀번호는 대문자, 소문자, 특수문자를 포함하고 8자리 이상이어야 합니다.")
+//    }
+//
+//    return Pair(true, "")
+//}
+//
+//private fun isValidPassword(password: String): Boolean {
+//    val upperCaseRegex = Regex("[A-Z]")
+//    val lowerCaseRegex = Regex("[a-z]")
+//    val specialCharRegex = Regex("[!@#$%^&*(),.?\":{}|<>]")
+//    return password.length >= 8 &&
+//            upperCaseRegex.containsMatchIn(password) &&
+//            lowerCaseRegex.containsMatchIn(password) &&
+//            specialCharRegex.containsMatchIn(password)
+//}
+//
+//private fun performLogin(
+//    studentNumber: String,
+//    name: String,
+//    selectedDepartment: String,
+//    password: String,
+//    navController: NavController,
+//    sharedPreferences: SharedPreferences,
+//    apiService: ApiService,
+//    onError: (String) -> Unit
+//) {
+//    // 입력 검증
+//    when {
+//        studentNumber.isEmpty() -> {
+//            onError("학번을 입력해주세요.")
+//        }
+//        studentNumber.length != 8 -> {
+//            onError("학번 8자리를 입력하세요.")
+//        }
+//        name.isEmpty() -> {
+//            onError("이름을 입력해주세요.")
+//        }
+//        selectedDepartment.isEmpty() -> {
+//            onError("학과를 선택해주세요.")
+//        }
+//        password.isEmpty() -> {
+//            onError("비밀번호를 입력해주세요.")
+//        }
+//        else -> {
+//            // API를 통해 로그인
+//            apiService.login(
+//                studentNumber,
+//                name,
+//                selectedDepartment,
+//                password,
+//                onSuccess = { accessToken, refreshToken ->
+//                    // 로그인 성공 시 처리
+//                    sharedPreferences.edit().apply {
+//                        putBoolean("isLoggedIn", true)
+//                        putString("userId", studentNumber)
+//                        putString("userName", name)
+//                        putString("department", selectedDepartment)
+//                        putString("access_token", accessToken)
+//                        putString("refresh_token", refreshToken)
+//                        apply()
+//                    }
+//                    navController.navigate("main")
+//                },
+//                onError = { error ->
+//                    onError(error) // 에러 메시지 설정
+//                }
+//            )
+//        }
+//    }
+//}
+//
+//@OptIn(ExperimentalMaterial3Api::class)
+//@Composable
+//fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
+//    var studentNumber by remember { mutableStateOf("") }
+//    var name by remember { mutableStateOf("") }
+//    var selectedDepartment by remember { mutableStateOf("") }
+//    var password by remember { mutableStateOf("") } // 비밀번호 상태 변수
+//    var confirmPassword by remember { mutableStateOf("") } // 비밀번호 재입력 상태 변수 추가
+//    var errorMessage by remember { mutableStateOf("") }
+//
+//    // LocalContext 가져오기
+//    val context = LocalContext.current
+//    val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
+//    val apiService = ApiService(context, client2 = OkHttpClient())
+//
+//    var showAlertDialog by remember { mutableStateOf(false) }
+//    var alertDialogTitle by remember { mutableStateOf("") }
+//    var alertDialogMessage by remember { mutableStateOf("") }
+//
+//    // BackHandler 추가
+//    BackHandler {
+//        // 아무 동작도 하지 않음으로써 뒤로가기 버튼을 비활성화
+//    }
+//
+//    val focusManager = LocalFocusManager.current
+//
+//    Column(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .padding(30.dp)
+//            .pointerInput(Unit) {
+//                detectTapGestures(onTap = {
+//                    focusManager.clearFocus() // 화면 터치 시 키보드 내림
+//                })
+//            },
+//        horizontalAlignment = Alignment.CenterHorizontally,
+//        verticalArrangement = Arrangement.Center
+//    ) {
+//        Text(
+//            text = "👋 환영합니다!",
+//            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+//            modifier = Modifier.padding(bottom = 40.dp),
+//            color = MaterialTheme.colorScheme.onSurface
+//        )
+//
+//        Image(
+//            painter = painterResource(id = R.drawable.sch_logo),
+//            contentDescription = null,
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .clip(RoundedCornerShape(15.dp))
+//        )
+//
+//        // 학과 목록 정의
+//        val departments = listOf("컴퓨터소프트웨어공학과", "정보보호학과", "의료IT공학과", "AI·빅데이터학과", "사물인터넷학과", "메타버스&게임학과")
+//        var expanded by remember { mutableStateOf(false) }
+//
+//        // 학과 선택 드롭다운 메뉴
+//        ExposedDropdownMenuBox(
+//            expanded = expanded,
+//            onExpandedChange = { expanded = !expanded }
+//        ) {
+//            OutlinedTextField(
+//                value = selectedDepartment,
+//                onValueChange = {},
+//                readOnly = true,
+//                modifier = Modifier
+//                    .fillMaxWidth()
+//                    .menuAnchor()
+//                    .padding(top = 50.dp)
+//                    .height(62.dp),
+//                label = { Text("학과") },
+//                shape = RoundedCornerShape(12.dp),
+//                trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
+//            )
+//
+//            // 드롭다운 메뉴
+//            ExposedDropdownMenu(
+//                expanded = expanded,
+//                onDismissRequest = { expanded = false }
+//            ) {
+//                departments.forEach { department ->
+//                    DropdownMenuItem(
+//                        text = { Text(department) },
+//                        onClick = {
+//                            selectedDepartment = department
+//                            expanded = false
+//                        }
+//                    )
+//                }
+//            }
+//        }
+//
+//        // 학번 입력 텍스트 필드
+//        OutlinedTextField(
+//            value = studentNumber,
+//            onValueChange = { studentNumber = it },
+//            label = { Text("학번 입력") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 20.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        focusManager.moveFocus(FocusDirection.Down)
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+//            isError = errorMessage.isNotEmpty() && studentNumber.isNotEmpty(),
+//            singleLine = true
+//        )
+//
+//        // 이름 입력 텍스트 필드
+//        OutlinedTextField(
+//            value = name,
+//            onValueChange = { name = it },
+//            label = { Text("이름 입력") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 2.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        focusManager.moveFocus(FocusDirection.Down)
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            singleLine = true
+//        )
+//
+//        // 비밀번호 입력 텍스트 필드
+//        OutlinedTextField(
+//            value = password,
+//            onValueChange = { password = it },
+//            label = { Text("비밀번호를 입력해주세요") },
+//            shape = RoundedCornerShape(12.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 20.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        focusManager.clearFocus()
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            visualTransformation = PasswordVisualTransformation(),
+//            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
+//            singleLine = true
+//        )
+//
+//        // 비밀번호 재입력 텍스트 필드
+//        OutlinedTextField(
+//            value = confirmPassword,
+//            onValueChange = { confirmPassword = it },
+//            label = { Text("비밀번호를 재입력해주세요") },
+//            shape = RoundedCornerShape(10.dp),
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(vertical = 20.dp)
+//                .height(62.dp)
+//                .onKeyEvent { keyEvent ->
+//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
+//                        focusManager.clearFocus()
+//                        true
+//                    } else {
+//                        false
+//                    }
+//                },
+//            visualTransformation = PasswordVisualTransformation(),
+//            isError = errorMessage.isNotEmpty() && confirmPassword.isNotEmpty(),
+//            singleLine = true
+//        )
+//
+//        // 오류 메시지 표시
+//        if (errorMessage.isNotEmpty()) {
+//            Text(
+//                text = errorMessage,
+//                color = Color.Red,
+//                modifier = Modifier.padding(top = 8.dp)
+//            )
+//        }
+//
+//        // 로그인 버튼
+//        Button(
+//            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF26539C)),
+//            onClick = {
+//                val validationResult = validateInputs(
+//                    studentNumber,
+//                    name,
+//                    selectedDepartment,
+//                    password,
+//                    confirmPassword // 비밀번호 재입력 추가
+//                )
+//
+//                if (validationResult.first) {
+//                    performLogin(
+//                        studentNumber,
+//                        name,
+//                        selectedDepartment,
+//                        password,
+//                        navController,
+//                        sharedPreferences,
+//                        apiService,
+//                        onError = { errorMessage = it }
+//                    )
+//                } else {
+//                    alertDialogTitle = "입력 오류"
+//                    alertDialogMessage = validationResult.second
+//                    showAlertDialog = true
+//                }
+//            },
+//            modifier = Modifier
+//                .fillMaxWidth()
+//                .padding(top = 30.dp)
+//        ) {
+//            Text("로그인")
+//        }
+//    }
+//
+//    // AlertDialog 표시
+//    if (showAlertDialog) {
+//        AlertDialog(
+//            onDismissRequest = { showAlertDialog = false },
+//            title = { Text(alertDialogTitle) },
+//            text = { Text(alertDialogMessage) },
+//            confirmButton = {
+//                Button(onClick = { showAlertDialog = false }) {
+//                    Text("확인")
+//                }
+//            }
+//        )
+//    }
+//}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
     var studentNumber by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
-    var major by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") } // 비밀번호 상태 변수 추가
+    var selectedDepartment by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") } // 비밀번호 상태 변수
+    var confirmPassword by remember { mutableStateOf("") } // 비밀번호 재입력 상태 변수 추가
     var errorMessage by remember { mutableStateOf("") }
 
     // LocalContext 가져오기
     val context = LocalContext.current
     val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
-    val apiService = ApiService(context, client2 = OkHttpClient()) // OkHttpClient를 인자로 전달하지 않음
+    val apiService = ApiService(context, client2 = OkHttpClient())
 
     var showAlertDialog by remember { mutableStateOf(false) }
     var alertDialogTitle by remember { mutableStateOf("") }
@@ -92,10 +718,10 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             text = "👋 환영합니다!",
             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(bottom = 40.dp),
-            color = MaterialTheme.colorScheme.onSurface // 다크 모드에 맞는 텍스트 색상
+            color = MaterialTheme.colorScheme.onSurface
         )
 
-            Image(
+        Image(
             painter = painterResource(id = R.drawable.sch_logo),
             contentDescription = null,
             modifier = Modifier
@@ -105,7 +731,6 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
 
         // 학과 목록 정의
         val departments = listOf("컴퓨터소프트웨어공학과", "정보보호학과", "의료IT공학과", "AI·빅데이터학과", "사물인터넷학과", "메타버스&게임학과")
-        var selectedDepartment by remember { mutableStateOf("") }
         var expanded by remember { mutableStateOf(false) }
 
         // 학과 선택 드롭다운 메뉴
@@ -144,10 +769,15 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             }
         }
 
-        // 학번 입력 텍스트 필드
+        // 학번 입력 텍스트 필드 (숫자만 입력 가능)
         OutlinedTextField(
             value = studentNumber,
-            onValueChange = { studentNumber = it },
+            onValueChange = {
+                // 숫자만 입력하도록 제한
+                if (it.all { char -> char.isDigit() }) {
+                    studentNumber = it
+                }
+            },
             label = { Text("학번 입력") },
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
@@ -156,7 +786,7 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                 .height(62.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
-                        focusManager.moveFocus(FocusDirection.Down) // 엔터 시 다음 필드로 이동
+                        focusManager.moveFocus(FocusDirection.Down)
                         true
                     } else {
                         false
@@ -167,25 +797,30 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             singleLine = true
         )
 
-        // 이름 입력 텍스트 필드
+        // 이름 입력 텍스트 필드 (스페이스바 방지)
         OutlinedTextField(
             value = name,
-            onValueChange = { name = it },
+            onValueChange = {
+                // 스페이스바가 포함되지 않도록 제한
+                if (!it.contains(" ")) {
+                    name = it
+                }
+            },
             label = { Text("이름 입력") },
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 2.dp)
+                .padding(vertical = 20.dp)
                 .height(62.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
-                        focusManager.moveFocus(FocusDirection.Down) // 엔터 시 다음 필드로 이동
+                        focusManager.moveFocus(FocusDirection.Down)
                         true
                     } else {
                         false
                     }
                 },
-            singleLine = true // 줄바꿈 방지
+            singleLine = true
         )
 
         // 비밀번호 입력 텍스트 필드
@@ -200,33 +835,21 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                 .height(62.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
-                        // 로그인 버튼 클릭과 같은 동작 수행
-                        focusManager.clearFocus() // 키보드 내림
-                        // 로그인 기능 호출
-                        performLogin(
-                            studentNumber,
-                            name,
-                            selectedDepartment,
-                            password,
-                            navController,
-                            sharedPreferences,
-                            apiService,
-                            onError = { errorMessage = it }
-                        )
+                        focusManager.clearFocus()
                         true
                     } else {
                         false
                     }
                 },
-            visualTransformation = PasswordVisualTransformation(), // 비밀번호 숨김 처리
+            visualTransformation = PasswordVisualTransformation(),
             isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
             singleLine = true
         )
 
         // 비밀번호 재입력 텍스트 필드
         OutlinedTextField(
-            value = password,
-            onValueChange = { password = it },
+            value = confirmPassword,
+            onValueChange = { confirmPassword = it },
             label = { Text("비밀번호를 재입력해주세요") },
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
@@ -235,26 +858,14 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                 .height(62.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
-                        // 로그인 버튼 클릭과 같은 동작 수행
-                        focusManager.clearFocus() // 키보드 내림
-                        // 로그인 기능 호출
-                        performLogin(
-                            studentNumber,
-                            name,
-                            selectedDepartment,
-                            password,
-                            navController,
-                            sharedPreferences,
-                            apiService,
-                            onError = { errorMessage = it }
-                        )
+                        focusManager.clearFocus()
                         true
                     } else {
                         false
                     }
                 },
-            visualTransformation = PasswordVisualTransformation(), // 비밀번호 숨김 처리
-            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
+            visualTransformation = PasswordVisualTransformation(),
+            isError = errorMessage.isNotEmpty() && confirmPassword.isNotEmpty(),
             singleLine = true
         )
 
@@ -275,7 +886,8 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                     studentNumber,
                     name,
                     selectedDepartment,
-                    password
+                    password,
+                    confirmPassword // 비밀번호 재입력 추가
                 )
 
                 if (validationResult.first) {
@@ -318,11 +930,14 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
     }
 }
 
+// 나머지 함수는 동일하게 유지
+
 private fun validateInputs(
     studentNumber: String,
     name: String,
     selectedDepartment: String,
-    password: String
+    password: String,
+    confirmPassword: String // 비밀번호 재입력 추가
 ): Pair<Boolean, String> {
     // 학과 유효성 검사
     if (selectedDepartment.isEmpty()) {
@@ -341,7 +956,7 @@ private fun validateInputs(
     }
     if (!studentNumber.startsWith("201") && !studentNumber.startsWith("2020") &&
         !studentNumber.startsWith("2021") && !studentNumber.startsWith("2022") &&
-        !studentNumber.startsWith("2023") && !studentNumber.startsWith("2024")) {
+        !studentNumber.startsWith("2023") &&         !studentNumber.startsWith("2024")) {
         return Pair(false, "학번은 201, 2020, 2021, 2022, 2023, 또는 2024로 시작해야 합니다.")
     }
 
@@ -359,6 +974,9 @@ private fun validateInputs(
     // 비밀번호 유효성 검사
     if (password.isEmpty()) {
         return Pair(false, "비밀번호를 입력해주세요.")
+    }
+    if (password != confirmPassword) { // 비밀번호와 재입력된 비밀번호 비교
+        return Pair(false, "비밀번호가 일치하지 않습니다.")
     }
     if (!isValidPassword(password)) {
         return Pair(false, "비밀번호는 대문자, 소문자, 특수문자를 포함하고 8자리 이상이어야 합니다.")
@@ -431,3 +1049,4 @@ private fun performLogin(
         }
     }
 }
+
