@@ -13,7 +13,6 @@ import com.example.attendancecheckandroidtest.R
 @Composable
 fun BottomNavigationBar(
     onMapClick: () -> Unit, // 지도 클릭 시 호출되는 콜백
-    onEventClick: () -> Unit, // 이벤트 클릭 시 호출되는 콜백
     onHomeClick: () -> Unit, // 홈 클릭 시 호출되는 콜백
     onMenuClick: () -> Unit, // 메뉴 클릭 시 호출되는 콜백
     onCalendarClick: () -> Unit, // 캘린더 클릭 시 호출되는 콜백
@@ -26,9 +25,9 @@ fun BottomNavigationBar(
         }
         Spacer(modifier = Modifier.weight(1f)) // 아이콘 사이에 여백 추가
 
-        // 지도 버튼
-        IconButton(onClick = { onMapClick() }) {
-            Icon(painter = painterResource(id = R.drawable.ic_map), contentDescription = "Map") // 지도 아이콘
+        // 캘린더 버튼
+        IconButton(onClick = { onCalendarClick() }) {
+            Icon(painter = painterResource(id = R.drawable.ic_calendar), contentDescription = "Calendar") // 캘린더 아이콘
         }
         Spacer(modifier = Modifier.weight(1f)) // 아이콘 사이에 여백 추가
 
@@ -38,9 +37,9 @@ fun BottomNavigationBar(
         }
         Spacer(modifier = Modifier.weight(1f)) // 아이콘 사이에 여백 추가
 
-        // 캘린더 버튼
-        IconButton(onClick = { onCalendarClick() }) {
-            Icon(painter = painterResource(id = R.drawable.ic_calendar), contentDescription = "Calendar") // 캘린더 아이콘
+        // 지도 버튼
+        IconButton(onClick = { onMapClick() }) {
+            Icon(painter = painterResource(id = R.drawable.ic_map), contentDescription = "Map") // 지도 아이콘
         }
         Spacer(modifier = Modifier.weight(1f)) // 아이콘 사이에 여백 추가
 

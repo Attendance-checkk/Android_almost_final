@@ -117,7 +117,7 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
             )
             LinkButton(
                 text = "👍 만족도 조사",
-                url = "https://www.google.com/",
+                url = "https://forms.gle/1PbtPMTjptGnUGTU9",
                 modifier = Modifier.padding(vertical = 4.dp)
             )
             LinkButton(
@@ -126,7 +126,7 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
                 modifier = Modifier.padding(vertical = 4.dp)
             )
 
-            SectionHeader("설정", color = MaterialTheme.colorScheme.onSurface)
+            SectionHeader("알림 설정", color = MaterialTheme.colorScheme.onSurface)
             // NotificationToggle을 감싸는 Box 추가
             Box(
                 modifier = Modifier
@@ -258,33 +258,6 @@ fun UserInfoList(userInfo: UserInfo?) {
     }
 }
 
-//@Composable
-//fun UserInfoList(userInfo: UserInfo?) {
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .background(Color.White),
-//        shape = RoundedCornerShape(12.dp), // 라운드 모서리
-//        border = BorderStroke(1.dp, Color.LightGray) // 테두리
-//    ) {
-//        LazyColumn(
-//            modifier = Modifier.fillMaxWidth()
-//        ) {
-//            items(listOf(
-//                Pair("학과", userInfo?.major ?: "입력되지 않음"),
-//                Pair("학번", userInfo?.studentCode ?: "입력되지 않음"),
-//                Pair("이름", userInfo?.name ?: "입력되지 않음")
-//            )) { (label, value) ->
-//                UserInfoRow(label = label, value = value)
-//
-//                // Divider 추가
-//                if (label != "이름") {
-//                    HorizontalDivider(color = Color.LightGray) // Divider 색상 조정 가능
-//                }
-//            }
-//        }
-//    }
-//}
 @Composable
 fun UserInfoRow(label: String, value: String) {
     Row(
