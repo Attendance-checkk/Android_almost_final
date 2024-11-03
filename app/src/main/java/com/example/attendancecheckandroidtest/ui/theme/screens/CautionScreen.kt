@@ -117,7 +117,7 @@ fun CautionScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navControll
                     Log.d("CautionView", "Close button clicked") // 버튼 클릭 로그
                     isButtonEnabled = false // 버튼 비활성화
                     onClose() // 이전 화면으로 돌아가고 -> TODO: 여기에서 navController로 나가는데 문제가 있음
-                    onTabSelected(4) // '메뉴' 탭으로 변경
+                    onTabSelected(2) // '홈' 탭으로 변경
 
                     // 일정 시간 후 버튼 재활성화
                     coroutineScope.launch {

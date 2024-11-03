@@ -32,7 +32,7 @@ fun MapScreen(navController: NavController) {
         Text(
             text = "지도",
             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-            modifier = Modifier.padding(top = 20.dp),
+            modifier = Modifier.padding(top = 16.dp),
             color = MaterialTheme.colorScheme.onSurface // 다크 모드에 맞는 텍스트 색상
         )
 

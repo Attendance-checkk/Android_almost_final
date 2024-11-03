@@ -44,6 +44,9 @@ import com.example.attendancecheckandroidtest.data.network.ApiService
 import okhttp3.OkHttpClient
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.activity.compose.BackHandler // 추가된 import
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.ui.focus.FocusDirection
@@ -51,16 +54,16 @@ import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
+fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, onError: (String) -> Unit) {
     var studentNumber by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var selectedDepartment by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") } // 비밀번호 상태 변수
     var confirmPassword by remember { mutableStateOf("") } // 비밀번호 재입력 상태 변수 추가
     var errorMessage by remember { mutableStateOf("") }
+    var showConfirmationDialog by remember { mutableStateOf(false) }
 
     // LocalContext 가져오기
     val context = LocalContext.current
@@ -82,13 +85,14 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
         modifier = Modifier
             .fillMaxSize()
             .padding(30.dp)
+            .verticalScroll(rememberScrollState())
             .pointerInput(Unit) {
                 detectTapGestures(onTap = {
                     focusManager.clearFocus() // 화면 터치 시 키보드 내림
                 })
             },
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.spacedBy(0.dp)
     ) {
         Text(
             text = "👋 환영합니다!",
@@ -109,6 +113,16 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
         val departments = listOf("컴퓨터소프트웨어공학과", "정보보호학과", "의료IT공학과", "AI·빅데이터학과", "사물인터넷학과", "메타버스&게임학과")
         var expanded by remember { mutableStateOf(false) }
 
+        Text(
+            "학과 선택",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 5.dp)
+                .padding(top = 50.dp),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
         // 학과 선택 드롭다운 메뉴
         ExposedDropdownMenuBox(
             expanded = expanded,
@@ -121,9 +135,9 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .menuAnchor()
-                    .padding(top = 50.dp)
-                    .height(62.dp),
-                label = { Text("학과") },
+                    .padding(top = 5.dp)
+                    .height(70.dp),
+                label = { Text("학과를 선택해주세요") },
                 shape = RoundedCornerShape(12.dp),
                 trailingIcon = { ExposedDropdownMenuDefaults.TrailingIcon(expanded = expanded) }
             )
@@ -145,6 +159,16 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             }
         }
 
+        Text(
+            "학번 입력",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 5.dp)
+                .padding(top = 20.dp),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
         // 학번 입력 텍스트 필드 (숫자만 입력 가능)
         OutlinedTextField(
             value = studentNumber,
@@ -158,8 +182,8 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp)
-                .height(62.dp)
+                .height(70.dp)
+                .padding(top = 5.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -171,6 +195,16 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
             isError = errorMessage.isNotEmpty() && studentNumber.isNotEmpty(),
             singleLine = true
+        )
+
+        Text(
+            "이름 입력",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 5.dp)
+                .padding(top = 20.dp),
+            color = MaterialTheme.colorScheme.onSurface
         )
 
         // 이름 입력 텍스트 필드 (스페이스바 방지)
@@ -186,8 +220,8 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp)
-                .height(62.dp)
+                .height(70.dp)
+                .padding(top = 5.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
                         focusManager.moveFocus(FocusDirection.Down)
@@ -199,6 +233,16 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             singleLine = true
         )
 
+        Text(
+            "비밀번호",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 5.dp)
+                .padding(top = 20.dp),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
         // 비밀번호 입력 텍스트 필드
         OutlinedTextField(
             value = password,
@@ -207,8 +251,8 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp)
-                .height(62.dp)
+                .height(70.dp)
+                .padding(top = 5.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
                         focusManager.clearFocus()
@@ -222,6 +266,16 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             singleLine = true
         )
 
+        Text(
+            "비밀번호 재확인",
+            style = MaterialTheme.typography.bodyMedium,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 5.dp)
+                .padding(top = 20.dp),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
         // 비밀번호 재입력 텍스트 필드
         OutlinedTextField(
             value = confirmPassword,
@@ -230,8 +284,8 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(vertical = 20.dp)
-                .height(62.dp)
+                .height(70.dp)
+                .padding(top = 5.dp)
                 .onKeyEvent { keyEvent ->
                     if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
                         focusManager.clearFocus()
@@ -265,7 +319,53 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                     confirmPassword // 비밀번호 재입력 추가
                 )
 
-                if (validationResult.first) {
+                when {
+                    studentNumber.isEmpty() -> {
+                        onError("학번을 입력해주세요.")
+                    }
+                    studentNumber.length != 8 -> {
+                        onError("학번 8자리를 입력하세요.")
+                    }
+                    name.isEmpty() -> {
+                        onError("이름을 입력해주세요.")
+                    }
+                    selectedDepartment.isEmpty() -> {
+                        onError("학과를 선택해주세요.")
+                    }
+                    password.isEmpty() -> {
+                        onError("비밀번호를 입력해주세요.")
+                    }
+                    else -> {
+                        if (validationResult.first) {
+                            alertDialogTitle = "입력된 정보 확인"
+                            alertDialogMessage = "입력한 정보가 맞으신가요?\n입력 정보가 다를 시 불이익이 있을 수 있습니다!"
+                            showConfirmationDialog = true
+                        } else {
+                            alertDialogTitle = "입력 오류"
+                            alertDialogMessage = validationResult.second
+                            showAlertDialog = true
+                        }
+                    }
+                }
+            },
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(top = 40.dp)
+        ) {
+            Text("로그인",
+                color = Color.White
+            )
+        }
+    }
+
+    if (showConfirmationDialog) {
+        AlertDialog(
+            onDismissRequest = { showConfirmationDialog = false },
+            title = { Text(alertDialogTitle) },
+            text = { Text(alertDialogMessage) },
+            confirmButton = {
+                Button(onClick = {
+                    showConfirmationDialog = false
                     performLogin(
                         studentNumber,
                         name,
@@ -274,20 +374,35 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
                         navController,
                         sharedPreferences,
                         apiService,
-                        onError = { errorMessage = it }
+                        onError = { errorMessage = it },
+                        onSuccess = {
+                            alertDialogTitle = "로그인 성공"
+                            alertDialogMessage = String.format("안녕하세요! %s님!", name)
+                            showAlertDialog = true
+                        },
+                        onClearInputs = {
+                            studentNumber = ""
+                            name = ""
+                            selectedDepartment = ""
+                            password = ""
+                            confirmPassword = ""
+                            errorMessage = ""
+                        }
                     )
-                } else {
-                    alertDialogTitle = "입력 오류"
-                    alertDialogMessage = validationResult.second
+
+                    alertDialogTitle = "로그인 성공"
+                    alertDialogMessage = String.format("안녕하세요! %s님!", name)
                     showAlertDialog = true
+                }) {
+                    Text("로그인")
                 }
             },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 30.dp)
-        ) {
-            Text("로그인")
-        }
+            dismissButton = {
+                Button(onClick = { showConfirmationDialog = false }) {
+                    Text("취소")
+                }
+            }
+        )
     }
 
     // AlertDialog 표시
@@ -297,7 +412,12 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>) {
             title = { Text(alertDialogTitle) },
             text = { Text(alertDialogMessage) },
             confirmButton = {
-                Button(onClick = { showAlertDialog = false }) {
+                Button(onClick = {
+                    showAlertDialog = false
+                    if (alertDialogTitle == "로그인 성공") {
+                        navController.navigate("main")
+                    }
+                }) {
                     Text("확인")
                 }
             }
@@ -378,50 +498,33 @@ private fun performLogin(
     navController: NavController,
     sharedPreferences: SharedPreferences,
     apiService: ApiService,
-    onError: (String) -> Unit
+    onError: (String) -> Unit,
+    onSuccess: () -> Unit,
+    onClearInputs: () -> Unit
 ) {
-    // 입력 검증
-    when {
-        studentNumber.isEmpty() -> {
-            onError("학번을 입력해주세요.")
+    // API를 통해 로그인
+    apiService.login(
+        studentNumber,
+        name,
+        selectedDepartment,
+        password,
+        onSuccess = { accessToken, refreshToken ->
+            // 로그인 성공 시 처리
+            sharedPreferences.edit().apply {
+                putBoolean("isLoggedIn", true)
+                putString("userId", studentNumber)
+                putString("userName", name)
+                putString("department", selectedDepartment)
+                putString("access_token", accessToken)
+                putString("refresh_token", refreshToken)
+                apply()
+            }
+            onSuccess()
+            onClearInputs()
+        },
+        onError = { error ->
+            onError(error) // 에러 메시지 설정
         }
-        studentNumber.length != 8 -> {
-            onError("학번 8자리를 입력하세요.")
-        }
-        name.isEmpty() -> {
-            onError("이름을 입력해주세요.")
-        }
-        selectedDepartment.isEmpty() -> {
-            onError("학과를 선택해주세요.")
-        }
-        password.isEmpty() -> {
-            onError("비밀번호를 입력해주세요.")
-        }
-        else -> {
-            // API를 통해 로그인
-            apiService.login(
-                studentNumber,
-                name,
-                selectedDepartment,
-                password,
-                onSuccess = { accessToken, refreshToken ->
-                    // 로그인 성공 시 처리
-                    sharedPreferences.edit().apply {
-                        putBoolean("isLoggedIn", true)
-                        putString("userId", studentNumber)
-                        putString("userName", name)
-                        putString("department", selectedDepartment)
-                        putString("access_token", accessToken)
-                        putString("refresh_token", refreshToken)
-                        apply()
-                    }
-                    navController.navigate("main")
-                },
-                onError = { error ->
-                    onError(error) // 에러 메시지 설정
-                }
-            )
-        }
-    }
+    )
 }
 

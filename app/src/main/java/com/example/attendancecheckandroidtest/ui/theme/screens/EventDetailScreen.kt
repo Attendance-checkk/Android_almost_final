@@ -105,7 +105,8 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                     text = event.location,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -127,7 +128,8 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                         text = "시작 | ${dateToString(it, is24Hour = is24Hour)}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -145,7 +147,8 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                         text = "종료 | ${dateToString(it, is24Hour = is24Hour)}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -164,7 +167,8 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                     text = event.description,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 

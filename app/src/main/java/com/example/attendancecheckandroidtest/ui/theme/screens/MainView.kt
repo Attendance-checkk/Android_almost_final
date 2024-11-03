@@ -45,6 +45,8 @@ fun MainView(
     val apiService = ApiService( context,client2 = OkHttpClient())
 //    val apiService = ApiService(context)
     val notificationManager = NotificationManager(context)
+    val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
+    val accessToken = sharedPreferences.getString("access_token", null)
 
     // 이벤트를 새로 고치는 함수
     fun fetchEvents() {
@@ -54,6 +56,20 @@ fun MainView(
         }, onError = { error ->
             errorMessage = error
             isLoading = false
+
+            if (accessToken != null) {
+                with(sharedPreferences.edit()) {
+                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                    remove("access_token") // 액세스 토큰 삭제
+                    apply()
+                }
+            }
+            // 에러 메시지에 따른 화면 전환 처리
+            when {
+                error.contains("412") -> navController.navigate("Duplicate")
+                error.contains("409") -> navController.navigate("DeleteByAdmin")
+                error.contains("430") -> navController.navigate("RequestAPIOver")
+            }
         })
     }
 
@@ -111,8 +127,7 @@ fun MainView(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-            val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
-            val accessToken = sharedPreferences.getString("access_token", null)
+
 
             when (selectedTabIndex) {
                 0 -> QRScreen(navController)
@@ -135,12 +150,10 @@ fun MainView(
                                 apply()
                             }
                         }
-                        if (errorMessage.contains("412")) {
-                            navController.navigate("Duplicate")
-                        }else if (errorMessage.contains("409")) {
-                        navController.navigate("DeleteByAdmin")
-                        }else if (errorMessage.contains("430")) {
-                            navController.navigate("RequestAPIOver")
+                        when {
+                            errorMessage.contains("412") -> navController.navigate("Duplicate")
+                            errorMessage.contains("409") -> navController.navigate("DeleteByAdmin")
+                            errorMessage.contains("430") -> navController.navigate("RequestAPIOver")
                         }
 
                     } else {
@@ -165,20 +178,4 @@ fun MainView(
             }
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    // MyApp() 대신 직접 호출
-    val navController = rememberNavController()
-    MainView(
-        navController = navController,
-        selectedTabIndex = 2,
-        isTimelineView = false,
-        onTabSelected = {},
-        onTimelineViewChange = {},
-        refreshEvents = {},
-        isNotificationEnabled = true // 기본값 설정
-    )
 }

@@ -7,12 +7,12 @@
     <!-- 알림 권한 추가 -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
     <uses-permission android:name="android.permission.USE_EXACT_ALARM" />
-    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" /> <!-- 수정된 부분 -->
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
 
     <!-- 카메라 권한 추가 -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.FLASHLIGHT"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/> <!-- 추가된 부분 -->
+    <uses-feature android:name="android.hardware.camera" android:required="false"/>
 
     <application
         android:allowBackup="true"
@@ -37,5 +37,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- AlarmReceiver 등록 -->
+        <receiver android:name=".data.models.AlarmReceiver" />
     </application>
 </manifest>

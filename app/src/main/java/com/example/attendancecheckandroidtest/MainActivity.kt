@@ -14,6 +14,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.content.pm.PackageManager
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.core.content.ContextCompat
@@ -101,7 +102,8 @@ class MainActivity : ComponentActivity() {
             colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
         ) {
             NavHost(navController, startDestination = if (isLoggedIn.value) "main" else "login") {
-                composable("login") { LoginView(navController, isLoggedIn) }
+                composable("login") {
+                    LoginView(navController, isLoggedIn, onError = {}) }
                 composable("main") {
                     MainView(
                         navController,
@@ -112,6 +114,10 @@ class MainActivity : ComponentActivity() {
                         refreshEvents = { /* Refresh events logic */ },
                         isNotificationEnabled = isNotificationEnabled
                     )
+                    BackHandler {
+                        // 메인 화면에서 뒤로가기를 눌렀을 때 앱 종료
+                        finish() // 현재 Activity 종료
+                    }
                 }
                 composable("eventDetail/{eventJson}") { backStackEntry ->
                     val eventJson = backStackEntry.arguments?.getString("eventJson") ?: ""

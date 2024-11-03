@@ -346,7 +346,7 @@ fun TimelineEventDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .background(Color.White),
+            .background(MaterialTheme.colorScheme.background),
         horizontalAlignment = Alignment.Start,
         verticalArrangement = Arrangement.Top
     ) {
@@ -363,7 +363,8 @@ fun TimelineEventDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(30.dp),
+                .padding(30.dp)
+                .background(MaterialTheme.colorScheme.background),
             horizontalAlignment = Alignment.Start,
             verticalArrangement = Arrangement.Top
         ) {
@@ -388,16 +389,18 @@ fun TimelineEventDetailScreen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(bottom = 8.dp)
+                    .background(MaterialTheme.colorScheme.background),
                 shape = RoundedCornerShape(12.dp),
                 border = BorderStroke(1.dp, Color.LightGray),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Text(
                     text = event.location,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -411,16 +414,17 @@ fun TimelineEventDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 4.dp)
-                        .background(Color.White.copy(alpha = 1.0f)),
+                        .background(MaterialTheme.colorScheme.surface),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color.LightGray),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     Text(
                         text = "시작 | ${dateToString(it, is24Hour = is24Hour)}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -430,16 +434,17 @@ fun TimelineEventDetailScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 8.dp)
-                        .background(Color.White.copy(alpha = 1.0f)),
+                        .background(MaterialTheme.colorScheme.surface),
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, Color.LightGray),
-                    colors = CardDefaults.cardColors(containerColor = Color.White)
+                    colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
                     Text(
                         text = "종료 | ${dateToString(it, is24Hour = is24Hour)}",
                         style = MaterialTheme.typography.bodyMedium,
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Start
+                        textAlign = TextAlign.Start,
+                        color = MaterialTheme.colorScheme.onSurface
                     )
                 }
             }
@@ -450,16 +455,17 @@ fun TimelineEventDetailScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(bottom = 8.dp)
-                    .background(Color.White.copy(alpha = 1.0f)),
+                    .background(MaterialTheme.colorScheme.surface),
                 shape = RoundedCornerShape(12.dp),
                 border = BorderStroke(1.dp, Color.LightGray),
-                colors = CardDefaults.cardColors(containerColor = Color.White)
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
             ) {
                 Text(
                     text = event.description,
                     style = MaterialTheme.typography.bodyMedium,
                     modifier = Modifier.padding(16.dp),
-                    textAlign = TextAlign.Start
+                    textAlign = TextAlign.Start,
+                    color = MaterialTheme.colorScheme.onSurface
                 )
             }
 
@@ -477,7 +483,7 @@ fun TimelineEventDetailScreen(
                         // 비동기 네비게이션 처리
                         coroutineScope.launch {
                             onClose() // 이전 화면으로 돌아가고
-                            onTabSelected(3) // '일정' 탭으로 변경
+                            onTabSelected(1) // '일정' 탭으로 변경
                             refreshEvents() // 이벤트 새로 고침
 
                             // 일정 시간 후 버튼 재활성화
@@ -541,9 +547,10 @@ private fun dateToString(date: Date, is24Hour: Boolean): String {
 fun TimelineEventSectionHeader(title: String) {
     Text(
         text = title,
+        color = MaterialTheme.colorScheme.onBackground,
         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
         modifier = Modifier
-            .background(Color.White)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(top = 14.dp, bottom = 6.dp, start = 5.dp),
         textAlign = TextAlign.Start
     )

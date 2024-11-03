@@ -100,7 +100,7 @@ class NotificationManager(private val context: Context) {
             NotificationDataByDate(
                 titleString = "개회식이 곧 시작돼요!",
                 bodyString = "개회식에 참여하고 스탬프를 받으세요 ✅",
-                date = createDateFromString("2024-11-05 10:20")
+                date = createDateFromString("2024-11-04 03:31")
             ),
             NotificationDataByDate(
                 titleString = "🎮 게임 경진대회가 곧 시작해요!",
