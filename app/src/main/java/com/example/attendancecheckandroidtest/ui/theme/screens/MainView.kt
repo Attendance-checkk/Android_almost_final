@@ -1,5 +1,6 @@
 package com.example.attendancecheckandroidtest.ui.theme.screens
 
+import android.content.Context.MODE_PRIVATE
 import android.util.Log
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
@@ -110,6 +111,9 @@ fun MainView(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
+            val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
+            val accessToken = sharedPreferences.getString("access_token", null)
+
             when (selectedTabIndex) {
                 0 -> QRScreen(navController)
                 1 -> CalendarScreen(events, navController, isTimelineView) { newValue ->
@@ -124,12 +128,21 @@ fun MainView(
                             textAlign = TextAlign.Center
                         )
                     } else if (errorMessage.isNotEmpty()) {
-                        Text(
-                            "오류 발생: $errorMessage",
-                            color = Color.Red,
-                            modifier = Modifier.fillMaxSize(),
-                            textAlign = TextAlign.Center
-                        )
+                        if (accessToken != null) {
+                            with(sharedPreferences.edit()) {
+                                putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                                remove("access_token") // 액세스 토큰 삭제
+                                apply()
+                            }
+                        }
+                        if (errorMessage.contains("412")) {
+                            navController.navigate("Duplicate")
+                        }else if (errorMessage.contains("409")) {
+                        navController.navigate("DeleteByAdmin")
+                        }else if (errorMessage.contains("430")) {
+                            navController.navigate("RequestAPIOver")
+                        }
+
                     } else {
                         HomeScreen(
                             events = events,

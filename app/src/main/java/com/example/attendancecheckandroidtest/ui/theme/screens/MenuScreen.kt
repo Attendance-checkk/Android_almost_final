@@ -100,13 +100,35 @@ fun MenuScreen(navController: NavController, onTabSelected: (Int) -> Unit, isNot
         Column(
             modifier = Modifier.padding(30.dp) // 내부 요소들에 대한 패딩 추가
         ) {
+            val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
+            val accessToken = sharedPreferences.getString("access_token", null)
+
             SectionHeader("학생 정보", color = MaterialTheme.colorScheme.onSurface)
             if (isLoading) {
                 Text("로딩 중...", color = Color.Gray)
             } else if (userInfo != null) {
                 UserInfoList(userInfo)
-            } else {
-                Text("정보를 불러오는 데 실패했습니다: $errorMessage", color = Color.Red)
+            } else if(errorMessage.isNotEmpty()){
+                if (accessToken != null) {
+                        // 계정 삭제 후 로그인 상태 업데이트
+                        with(sharedPreferences.edit()) {
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                } else {
+                    errorMessage = "액세스 토큰이 없습니다."
+                }
+                if (errorMessage.contains("412")) {
+                    navController.navigate("Duplicate")
+                }else if (errorMessage.contains("409")) {
+                    navController.navigate("DeleteByAdmin")
+                }else if (errorMessage.contains("430")) {
+                    navController.navigate("RequestAPIOver")
+                }
+            }else{
+//                Text("정보를 불러오는 데 실패했습니다: $errorMessage", color = Color.Red)
+                Text("정보를 불러오는 데 실패했습니다", color = Color.Red)
+
             }
 
             SectionHeader("링크", color = MaterialTheme.colorScheme.onSurface)

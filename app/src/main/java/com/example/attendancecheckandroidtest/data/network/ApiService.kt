@@ -149,7 +149,7 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
             override fun onFailure(call: Call, e: IOException) {
                 e.printStackTrace() // 요청 실패 시 오류 출력
                 CoroutineScope(Dispatchers.Main).launch {
-                    onError("로그인 요청에 실패했습니다.") // 에러 콜백 호출
+                    onError("로그인 요청에 실패했습니다") // 에러 메시지 포함
                 }
             }
 

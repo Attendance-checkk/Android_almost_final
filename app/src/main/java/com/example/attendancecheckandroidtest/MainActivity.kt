@@ -14,7 +14,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.content.pm.PackageManager
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Column
 import androidx.core.content.ContextCompat
@@ -98,22 +97,6 @@ class MainActivity : ComponentActivity() {
         // 현재 다크 모드 여부를 확인
         val isDarkTheme = isSystemInDarkTheme()
 
-//        MaterialTheme(
-//            colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
-//        ) {
-//            NavHost(navController, startDestination = if (isLoggedIn.value) "main" else "login") {
-//                composable("login") { LoginView(navController, isLoggedIn) }
-//                composable("main") {
-//                    MainView(
-//                        navController,
-//                        selectedTabIndex,
-//                        isTimelineView,
-//                        onTabSelected = { newIndex -> selectedTabIndex = newIndex },
-//                        onTimelineViewChange = { newValue -> isTimelineView = newValue },
-//                        refreshEvents = { /* Refresh events logic */ },
-//                        isNotificationEnabled = isNotificationEnabled
-//                    )
-//                }
         MaterialTheme(
             colorScheme = if (isDarkTheme) darkColorScheme() else lightColorScheme()
         ) {
@@ -129,17 +112,6 @@ class MainActivity : ComponentActivity() {
                         refreshEvents = { /* Refresh events logic */ },
                         isNotificationEnabled = isNotificationEnabled
                     )
-                    // BackHandler 추가
-                    BackHandler(enabled = true) {
-                        // 필요한 경우 이전 화면으로 이동
-                        if (navController.currentDestination?.route == "main") {
-                            // 메인 화면에서 뒤로가기를 눌렀을 때 앱 종료
-                            // 또는 다른 동작을 수행할 수 있습니다.
-                            finish() // 이 Activity 종료
-                        } else {
-                            navController.popBackStack() // 이전 화면으로 이동
-                        }
-                    }
                 }
                 composable("eventDetail/{eventJson}") { backStackEntry ->
                     val eventJson = backStackEntry.arguments?.getString("eventJson") ?: ""
@@ -154,6 +126,38 @@ class MainActivity : ComponentActivity() {
                 }
                 composable("caution") {
                     CautionScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
+                }
+                composable("Duplicate") {
+                    DuplicateScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
+                }
+                composable("DeleteByAdmin") {
+                    DeleteByAdminScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
+                }
+                composable("RequestAPIOver") {
+                    RequestAPIOverScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
+                }
+                composable("TryLoginFreq") {
+                    TryLoginFreqScreen(
                         onClose = { navController.popBackStack() },
                         onTabSelected = { selectedTabIndex = it },
                         navController = navController,

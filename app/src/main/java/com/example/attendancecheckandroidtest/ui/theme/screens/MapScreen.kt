@@ -18,55 +18,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.attendancecheckandroidtest.R
-//
-//@Composable
-//fun MapScreen(navController: NavController) {
-//    val imageRes = R.drawable.sch_map
-//
-//    Column(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(),
-//        horizontalAlignment = Alignment.CenterHorizontally
-//    ) {
-//        Text(
-//            text = "지도",
-//            style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.Bold),
-//            modifier = Modifier.padding(top = 20.dp),
-//            color = Color.Black
-//        )
-//
-//        Text(
-//            text = "🔎 이미지를 클릭해보세요!",
-//            style = MaterialTheme.typography.bodyMedium,
-//            modifier = Modifier.padding(top = 8.dp),
-//            color = Color.Black
-//        )
-//
-//        Column(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(16.dp),
-//            horizontalAlignment = Alignment.CenterHorizontally,
-//            verticalArrangement = Arrangement.Center
-//        ) {
-//            Image(
-//                painter = painterResource(id = imageRes),
-//                contentDescription = "지도",
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp)
-//                    .background(Color.Gray, shape = RoundedCornerShape(16.dp))
-//                    .border(2.dp, Color.Black, shape = RoundedCornerShape(10.dp))
-//                    .shadow(8.dp, shape = RoundedCornerShape(16.dp))
-//                    .clickable {
-//                        navController.navigate("mapDetail") // "mapDetail"로 이동
-//                    },
-//                contentScale = ContentScale.Fit
-//            )
-//        }
-//    }
-//}
+
 @Composable
 fun MapScreen(navController: NavController) {
     val imageRes = R.drawable.sch_map
