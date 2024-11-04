@@ -5,6 +5,7 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
@@ -414,6 +415,7 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
                             alertDialogTitle = "로그인 성공"
                             alertDialogMessage = String.format("안녕하세요! %s님!", name)
                             showAlertDialog = true
+                            isLoggedIn.value = true
                         },
                         onClearInputs = {
                             studentNumber = ""
@@ -425,9 +427,9 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
                         }
                     )
 
-                    alertDialogTitle = "로그인 성공"
-                    alertDialogMessage = String.format("안녕하세요! %s님!", name)
-                    showAlertDialog = true
+//                    alertDialogTitle = "로그인 성공"
+//                    alertDialogMessage = String.format("안녕하세요! %s님!", name)
+//                    showAlertDialog = true
                 }) {
                     Text("로그인")
                 }
@@ -558,7 +560,13 @@ private fun performLogin(
             onClearInputs()
         },
         onError = { error ->
-            onError(error) // 에러 메시지 설정
+            Log.e("LoginError", "로그인 오류: $error")
+            // 405 또는 406 오류를 체크하여 로그인 실패 처리
+            if (error.contains("로그인 실패: 잘못된 자격 증명입니다.")) {
+                onError("정보가 일치하지 않습니다..")
+            } else {
+                onError(error) // 일반 오류 메시지 설정
+            }
         }
     )
 }

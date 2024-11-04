@@ -136,59 +136,56 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
             }
         })
     }
+
     fun login(
         studentCode: String,
         name: String,
         major: String,
-        password: String, // 비밀번호 추가
+        password: String,
         onSuccess: (String, String) -> Unit,
         onError: (String) -> Unit
     ) {
-
-        val notificationManager = NotificationManager(context)
-
         val url = "https://univting.cc:9999/user/login"
-        val json = """{"student_code":"$studentCode","name":"$name","major":"$major","password":"$password"}""" // JSON 형식
+        val json = """{"student_code":"$studentCode","name":"$name","major":"$major","password":"$password"}"""
 
-        Log.d("Login Request", json) // 요청 본문 로그
+        Log.d("Login Request", json)
 
-        val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull() // 미디어 타입 설정
-        val requestBody = json.toRequestBody(mediaType) // 요청 본문 생성
+        val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
+        val requestBody = json.toRequestBody(mediaType)
 
-        // POST 요청 생성
         val request = Request.Builder()
             .url(url)
             .post(requestBody)
             .build()
 
+                val notificationManager = NotificationManager(context)
 
-        // 비동기 네트워크 호출
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                e.printStackTrace() // 요청 실패 시 오류 출력
+                e.printStackTrace()
                 CoroutineScope(Dispatchers.Main).launch {
-                    onError("로그인 요청에 실패했습니다") // 에러 메시지 포함
+                    onError("로그인 요청에 실패했습니다")
                 }
             }
 
             override fun onResponse(call: Call, response: Response) {
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    Log.d("Login Response", responseBody ?: "Response body is null")
+                val errorResponse = response.body?.string()
+                Log.e("Login Error", errorResponse ?: "Error response is null")
 
+                if (response.isSuccessful) {
                     // 성공적인 응답 처리
-                    val jsonResponse = JSONObject(responseBody ?: "{}")
-                    val tokenObject = jsonResponse.optJSONObject("token") // token 객체를 가져옴
-                    val accessToken = tokenObject?.optString("access_token", null) // access_token을 가져옴
-                    val refreshToken = tokenObject?.optString("refresh_token", null) // refresh_token을 가져옴
+                    val jsonResponse = JSONObject(errorResponse ?: "{}")
+                    val tokenObject = jsonResponse.optJSONObject("token")
+                    val accessToken = tokenObject?.optString("access_token", null)
+                    val refreshToken = tokenObject?.optString("refresh_token", null)
 
                     if (accessToken != null && refreshToken != null) {
                         CoroutineScope(Dispatchers.Main).launch {
-                            onSuccess(accessToken, refreshToken) // 로그인 성공 시 콜백 호출
+                            onSuccess(accessToken, refreshToken)
 
                             // 알림 권한 확인 후 알림 예약
                             if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
-                                notificationManager.scheduleNotificationListFromApi() // 알림 예약
+                                notificationManager.scheduleNotificationListFromApi()
                             }
                         }
                     } else {
@@ -198,19 +195,97 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
                     }
                 } else {
                     // 오류 응답 처리
-                    val errorResponse = response.body?.string()
-                    Log.e("Login Error", errorResponse ?: "Error response is null")
-
                     val jsonResponse = JSONObject(errorResponse ?: "{}")
                     val message = jsonResponse.optString("message", "알 수 없는 오류입니다.")
 
                     CoroutineScope(Dispatchers.Main).launch {
-                        onError(message) // 오류 메시지 전달
+                        // 405 또는 406 오류를 체크
+                        if (response.code == 405 || response.code == 406) {
+                            onError("로그인 실패: 잘못된 자격 증명입니다.")
+
+                        } else {
+                            onError(message)
+                        }
                     }
                 }
             }
         })
     }
+//    fun login(
+//        studentCode: String,
+//        name: String,
+//        major: String,
+//        password: String, // 비밀번호 추가
+//        onSuccess: (String, String) -> Unit,
+//        onError: (String) -> Unit
+//    ) {
+//
+//        val notificationManager = NotificationManager(context)
+//
+//        val url = "https://univting.cc:9999/user/login"
+//        val json = """{"student_code":"$studentCode","name":"$name","major":"$major","password":"$password"}""" // JSON 형식
+//
+//        Log.d("Login Request", json) // 요청 본문 로그
+//
+//        val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull() // 미디어 타입 설정
+//        val requestBody = json.toRequestBody(mediaType) // 요청 본문 생성
+//
+//        // POST 요청 생성
+//        val request = Request.Builder()
+//            .url(url)
+//            .post(requestBody)
+//            .build()
+//
+//
+//        // 비동기 네트워크 호출
+//        client.newCall(request).enqueue(object : Callback {
+//            override fun onFailure(call: Call, e: IOException) {
+//                e.printStackTrace() // 요청 실패 시 오류 출력
+//                CoroutineScope(Dispatchers.Main).launch {
+//                    onError("로그인 요청에 실패했습니다") // 에러 메시지 포함
+//                }
+//            }
+//
+//            override fun onResponse(call: Call, response: Response) {
+//                if (response.isSuccessful) {
+//                    val responseBody = response.body?.string()
+//                    Log.d("Login Response", responseBody ?: "Response body is null")
+//
+//                    // 성공적인 응답 처리
+//                    val jsonResponse = JSONObject(responseBody ?: "{}")
+//                    val tokenObject = jsonResponse.optJSONObject("token") // token 객체를 가져옴
+//                    val accessToken = tokenObject?.optString("access_token", null) // access_token을 가져옴
+//                    val refreshToken = tokenObject?.optString("refresh_token", null) // refresh_token을 가져옴
+//
+//                    if (accessToken != null && refreshToken != null) {
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            onSuccess(accessToken, refreshToken) // 로그인 성공 시 콜백 호출
+//
+//                            // 알림 권한 확인 후 알림 예약
+//                            if (NotificationManagerCompat.from(context).areNotificationsEnabled()) {
+//                                notificationManager.scheduleNotificationListFromApi() // 알림 예약
+//                            }
+//                        }
+//                    } else {
+//                        CoroutineScope(Dispatchers.Main).launch {
+//                            onError("로그인 실패: ${jsonResponse.optString("error", "Unknown error")}")
+//                        }
+//                    }
+//                } else {
+//                    // 오류 응답 처리
+//                    val errorResponse = response.body?.string()
+//                    Log.e("Login Error", errorResponse ?: "Error response is null")
+//
+//                    val jsonResponse = JSONObject(errorResponse ?: "{}")
+//                    val message = jsonResponse.optString("message", "알 수 없는 오류입니다.")
+//
+//                    CoroutineScope(Dispatchers.Main).launch {
+//                        onError(message) // 오류 메시지 전달
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     private fun parseEventTime(eventTime: String): Long {
         val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
