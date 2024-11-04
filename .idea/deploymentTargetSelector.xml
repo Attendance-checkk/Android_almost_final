@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="AttendanceCheckAndroidTest.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-04T19:29:05.273251Z">
+        <DropdownSelection timestamp="2024-11-04T21:29:50.256717Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=R3CT80DE04V" />

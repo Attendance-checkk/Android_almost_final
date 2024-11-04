@@ -29,72 +29,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
-//
-//@Composable
-//fun TimelineEventItem(event: Event, onClick: () -> Unit) {
-//    val context = LocalContext.current
-//    val is24Hour = DateFormat.is24HourFormat(context)
-//
-//    Card(
-//        modifier = Modifier
-//            .fillMaxWidth()
-//            .padding(vertical = 2.dp)
-//            .clickable { onClick() },
-//        shape = RoundedCornerShape(15.dp)
-//    ) {
-//        Box(
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .border(1.dp, Color.Gray, shape = RoundedCornerShape(15.dp))
-//                .background(color = Color.White)
-//        ) {
-//            Row(
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(16.dp),
-//                verticalAlignment = Alignment.CenterVertically
-//            ) {
-//                EventImage(event)
-//
-//                Spacer(modifier = Modifier.width(10.dp))
-//
-//                Column(modifier = Modifier.weight(1f)) {
-//                    val startTime = iso8601ToDate(event.eventStartTime)
-//                    val endTime = iso8601ToDate(event.eventEndTime)
-//
-//                    // Null 체크 추가
-//                    startTime?.let {
-//                        Text(
-//                            text = dateToString(it, is24Hour),
-//                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-//                            color = Color.Gray
-//                        )
-//                    }
-//                    endTime?.let {
-//                        Text(
-//                            text = dateToString(it, is24Hour),
-//                            style = MaterialTheme.typography.bodyMedium.copy(fontSize = 12.sp),
-//                            color = Color.Gray
-//                        )
-//                    }
-//                    Text(
-//                        text = event.eventName,
-//                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-//                    )
-//                }
-//
-//                Spacer(modifier = Modifier.padding())
-//
-//                val (statusText, statusColor) = EventStatus(event)
-//                Text(
-//                    text = statusText,
-//                    color = statusColor,
-//                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold)
-//                )
-//            }
-//        }
-//    }
-//}
+
 @Composable
 fun TimelineEventItem(event: Event, onClick: () -> Unit) {
     val context = LocalContext.current

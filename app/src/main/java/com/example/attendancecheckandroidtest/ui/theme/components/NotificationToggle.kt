@@ -262,92 +262,6 @@ fun NotificationToggle(isChecked: Boolean, onToggle: (Boolean) -> Unit) {
         NotificationDataByDate("곧 시상식과 함께 폐회식이 진행돼요!", "마지막까지 함께해요 🥳", createDateFromString("2024-11-06 14:50"))
     )
 
-//    Row(
-//        verticalAlignment = Alignment.CenterVertically,
-//        modifier = Modifier
-//            .fillMaxWidth() // 너비를 가득 채움
-//            .clip(RoundedCornerShape(12.dp)) // 둥근 모서리 먼저 적용
-//            .background(MaterialTheme.colorScheme.surface) // 배경색 설정
-//            .padding(horizontal = 16.dp, vertical = 4.dp) // 내부 패딩 추가
-//    ) {
-//        Text(text = "🔔 알림 수신",
-//            modifier = Modifier.weight(1f),
-//            color = MaterialTheme.colorScheme.onSurface) // 텍스트 색상 적용
-//        Switch(
-//            checked = isChecked,
-//            onCheckedChange = { newValue ->
-//                if (newValue) {
-//                    if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-//                        onToggle(true)
-//                        notificationManager.scheduleNotifications(notifications)
-//                    } else {
-//                        showPermissionDialog = true
-//                    }
-//                } else {
-//                    showDialog = true
-//                }
-//            },
-//            colors = SwitchDefaults.colors(
-//                checkedTrackColor = if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C),
-//                uncheckedTrackColor = Color.Gray, // 체크 해제 상태의 배경색
-//                checkedThumbColor = Color.White, // 체크 상태의 thumb 색상
-//                uncheckedThumbColor = Color.White // 체크 해제 상태의 thumb 색상
-//            )
-//        )
-//    }
-    // 알림 권한 요청
-//    if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
-//        showPermissionDialog = true
-//    } else {
-//        // 알림 예약
-//        notificationManager.scheduleNotifications(notifications)
-//    }
-//    // 권한 요청 다이얼로그 표시
-//    if (showPermissionDialog) {
-//        AlertDialog(
-//            onDismissRequest = { showPermissionDialog = false },
-//            title = { Text("권한 요청") },
-//            text = { Text("알림을 사용하기 위해 권한이 필요합니다.", color = MaterialTheme.colorScheme.onSurface) },
-//            confirmButton = {
-//                TextButton(onClick = {
-//                    ActivityCompat.requestPermissions(context as Activity, arrayOf(Manifest.permission.POST_NOTIFICATIONS), 0)
-//                    showPermissionDialog = false
-//                }) {
-//                    Text("권한 요청")
-//                }
-//            },
-//            dismissButton = {
-//                TextButton(onClick = { showPermissionDialog = false }) {
-//                    Text("취소")
-//                }
-//            }
-//        )
-//    }
-//
-//    // 다이얼로그 표시
-//    if (showDialog) {
-//        AlertDialog(
-//            onDismissRequest = { showDialog = false },
-//            title = { Text("정말 끄시겠습니까?", color = MaterialTheme.colorScheme.onSurface) },
-//            text = { Text("알림을 비활성화하시면 공지를 놓치실 수 있어요!", color = MaterialTheme.colorScheme.onSurface) },
-//            confirmButton = {
-//                TextButton(onClick = {
-////                    onToggle(false)
-//                    notificationManager.cancelAllNotifications()
-//                    showDialog = false
-//                }) {
-//                    Text("확인")
-//                }
-//            },
-//            dismissButton = {
-//                TextButton(onClick = { showDialog = false }) {
-//                    Text("취소")
-//                }
-//            }
-//        )
-//    }
-//}
-
     Row(
         verticalAlignment = Alignment.CenterVertically,
         modifier = Modifier
@@ -360,28 +274,6 @@ fun NotificationToggle(isChecked: Boolean, onToggle: (Boolean) -> Unit) {
             modifier = Modifier.weight(1f),
             color = MaterialTheme.colorScheme.onSurface)
 
-//    Switch(
-//        checked = isChecked,
-//        onCheckedChange = { newValue ->
-//            if (newValue) {
-//                if (ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
-//                    onToggle(true)
-//                    notificationManager.scheduleNotifications(notifications)
-//                } else {
-//                    showPermissionDialog = true
-//                }
-//            } else {
-//                onToggle(false)
-//                notificationManager.cancelAllNotifications()
-//            }
-//        },
-//        colors = SwitchDefaults.colors(
-//            checkedTrackColor = if (isSystemInDarkTheme()) Color(0xFF72C6EF) else Color(0xFF26539C),
-//            uncheckedTrackColor = Color.Gray,
-//            checkedThumbColor = Color.White,
-//            uncheckedThumbColor = Color.White
-//        )
-//    )
 //}
         Switch(
             checked = isChecked,

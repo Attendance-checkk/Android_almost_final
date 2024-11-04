@@ -41,8 +41,6 @@ fun CautionScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navControll
     var errorMessage by remember { mutableStateOf("") }
 
     val context = LocalContext.current
-//    val client = OkHttpClient() // OkHttpClient 인스턴스 생성
-//    val apiService = ApiService(client, context)
     val apiService = ApiService(context, client2 = OkHttpClient())
     val sharedPreferences = context.getSharedPreferences("MyPrefs", Context.MODE_PRIVATE)
 

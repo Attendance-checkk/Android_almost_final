@@ -35,8 +35,6 @@ fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navCon
 
     //DuplicateScreen
     val context = LocalContext.current
-//    val client = OkHttpClient() // OkHttpClient 인스턴스 생성
-//    val apiService = ApiService(client, context)
     val apiService = ApiService(context, client2 = OkHttpClient())
     val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
 
