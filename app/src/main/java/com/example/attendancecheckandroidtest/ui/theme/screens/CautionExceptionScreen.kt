@@ -72,7 +72,7 @@ fun ExceptionScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navContro
             Button(
                 onClick = {
                     //
-                    navController.navigate("main")
+                    navController.navigate("map")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                 modifier = Modifier

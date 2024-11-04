@@ -72,7 +72,7 @@ fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navCon
             Button(
                 onClick = {
                     //
-                    navController.navigate("main")
+                    navController.navigate("map")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                 modifier = Modifier
