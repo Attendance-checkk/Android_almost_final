@@ -4,7 +4,7 @@
     <selectionStates>
       <SelectionState runConfigName="AttendanceCheckAndroidTest.app">
         <option name="selectionMode" value="DROPDOWN" />
-        <DropdownSelection timestamp="2024-11-04T18:34:19.590656Z">
+        <DropdownSelection timestamp="2024-11-04T19:29:05.273251Z">
           <Target type="DEFAULT_BOOT">
             <handle>
               <DeviceId pluginId="PhysicalDevice" identifier="serial=R3CT80DE04V" />
@@ -12,6 +12,9 @@
           </Target>
         </DropdownSelection>
         <DialogSelection />
+      </SelectionState>
+      <SelectionState runConfigName="DuplicatePreview">
+        <option name="selectionMode" value="DROPDOWN" />
       </SelectionState>
     </selectionStates>
   </component>

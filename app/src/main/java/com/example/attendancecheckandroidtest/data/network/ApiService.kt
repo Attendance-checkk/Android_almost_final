@@ -379,6 +379,7 @@ private fun formatTimeToKoreanTime(timestamp: Long): String {
                     200 -> "Success"
                     452 -> "이미 등록된 코드입니다."
                     451 -> "코드 형식이 맞지 않습니다."
+                    404 -> "d"
                     else -> {
                         // 여기서 400 상태 코드도 처리
                         if (callback.toString().contains("400")) {
