@@ -73,7 +73,7 @@ fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navC
                 onClick = {
                     //
 //                    navController.navigate("main")
-                    navController.navigate("map")
+                    navController.navigate("mapDetail")
 
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
