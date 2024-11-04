@@ -69,7 +69,7 @@ class MainActivity : ComponentActivity() {
         val notificationManager = NotificationManager(this)
         notificationManager.scheduleNotificationListFromApi()
     }
-
+    //V10
     @Composable
     fun MyApp() {
         val navController = rememberNavController()
