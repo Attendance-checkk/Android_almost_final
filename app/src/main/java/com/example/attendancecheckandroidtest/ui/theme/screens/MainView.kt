@@ -48,6 +48,13 @@ fun MainView(
     val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
     val accessToken = sharedPreferences.getString("access_token", null)
 
+    var showAlertDialog by remember { mutableStateOf(false) }
+    var alertDialogTitle by remember { mutableStateOf("") }
+    var alertDialogMessage by remember { mutableStateOf("") }
+    var showConfirmationDialog by remember { mutableStateOf(false) }
+
+
+
     // 이벤트를 새로 고치는 함수
     fun fetchEvents() {
         apiService.fetchEventList(context, onSuccess = { fetchedEvents ->
@@ -56,22 +63,45 @@ fun MainView(
         }, onError = { error ->
             errorMessage = error
             isLoading = false
+            if (error.isNotEmpty()){
+                if (accessToken != null) {
+                    if (errorMessage.contains("401")) {
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                        navController.navigate("TokenOver")
+                    } else if (errorMessage.contains("409")) {
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                        navController.navigate("DeleteByAdmin")
+                    } else if (errorMessage.contains("412")) {
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                        navController.navigate("Duplicate")
+                    } else if (errorMessage.contains("430")) {  //430
+                        navController.navigate("RequestAPIOver")
+                    } else {
+                        errorMessage = "오류가 발생하였습니다."
+                    }
 
-            if (accessToken != null) {
-                with(sharedPreferences.edit()) {
-                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                    remove("access_token") // 액세스 토큰 삭제
-                    apply()
+                }else {
+                    errorMessage = "액세스 토큰이 없습니다."
                 }
-            }
-            // 에러 메시지에 따른 화면 전환 처리
-            when {
-                error.contains("412") -> navController.navigate("Duplicate")
-                error.contains("409") -> navController.navigate("DeleteByAdmin")
-                error.contains("430") -> navController.navigate("RequestAPIOver")
+
             }
         })
     }
+
+
+
 
     // 초기 이벤트 목록을 가져오는 함수 호출
     LaunchedEffect(Unit) {
@@ -127,8 +157,6 @@ fun MainView(
         }
     ) { innerPadding ->
         Column(modifier = Modifier.padding(innerPadding)) {
-
-
             when (selectedTabIndex) {
                 0 -> QRScreen(navController)
                 1 -> CalendarScreen(events, navController, isTimelineView) { newValue ->
@@ -142,21 +170,43 @@ fun MainView(
                             modifier = Modifier.fillMaxSize(),
                             textAlign = TextAlign.Center
                         )
-                    } else if (errorMessage.isNotEmpty()) {
-                        if (accessToken != null) {
-                            with(sharedPreferences.edit()) {
-                                putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                                remove("access_token") // 액세스 토큰 삭제
-                                apply()
-                            }
-                        }
-                        when {
-                            errorMessage.contains("412") -> navController.navigate("Duplicate")
-                            errorMessage.contains("409") -> navController.navigate("DeleteByAdmin")
-                            errorMessage.contains("430") -> navController.navigate("RequestAPIOver")
-                        }
-
-                    } else {
+                    }
+//                    else if (errorMessage.isNotEmpty()) {
+//                        if (accessToken != null) {
+//                            if (errorMessage.contains("401")) {
+//                                with(sharedPreferences.edit()) {
+//                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+//                                    remove("access_token") // 액세스 토큰 삭제
+//                                    apply()
+//                                }
+//                                navController.navigate("TokenOver")
+//                            } else if (errorMessage.contains("409")) {
+//                                with(sharedPreferences.edit()) {
+//                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+//                                    remove("access_token") // 액세스 토큰 삭제
+//                                    apply()
+//                                }
+//                                navController.navigate("DeleteByAdmin")
+//                            } else if (errorMessage.contains("412")) {
+//                                with(sharedPreferences.edit()) {
+//                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+//                                    remove("access_token") // 액세스 토큰 삭제
+//                                    apply()
+//                                }
+//                                navController.navigate("Duplicate")
+//                            } else if (errorMessage.contains("430")) {      //430은 액세스 토큰 삭제
+//                                navController.navigate("TryLoginFreq")
+//                            }else{
+////                            Text("정보를 불러오는 데 실패했습니다: $errorMessage", color = Color.Red)
+//////                            Text("정보를 불러오는 데 실패했습니다", color = Color.Red)
+//                            }
+//                        }else {
+//                            ////
+//                            errorMessage = "액세스 토큰이 없습니다."
+//                        }
+//
+//                    }
+                    else {
                         HomeScreen(
                             events = events,
                             context = context,

@@ -24,21 +24,19 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.attendancecheckandroidtest.data.network.ApiService
+
 import okhttp3.OkHttpClient
 
 @Composable
-fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navController: NavController, deleteAccount: () -> Unit) {
+fun TokenOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navController: NavController, deleteAccount: () -> Unit) {
     var isButtonEnabled by remember { mutableStateOf(true) } // 버튼 활성화 상태
     val coroutineScope = rememberCoroutineScope() // CoroutineScope 생성
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
     var errorMessage by remember { mutableStateOf("") }
 
-    //DuplicateScreen
+    //DeleteByAdminScreen
     val context = LocalContext.current
-//    val client = OkHttpClient() // OkHttpClient 인스턴스 생성
-//    val apiService = ApiService(client, context)
-    val apiService = ApiService(context, client2 = OkHttpClient())
-    val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
+
 
 
     Column(
@@ -49,14 +47,14 @@ fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navCon
         verticalArrangement = Arrangement.SpaceBetween // 위아래로 공간을 분배
     ) {
         Text(
-            text = "⚠️ 로그인 회수 초과",
+            text = "⚠️ 토큰 만료",
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Start,
             color = MaterialTheme.colorScheme.onSurface // 다크 모드에 맞는 텍스트 색상
         )
 
         Text(
-            text = "로그인 회수가 초과 되었습니다.\n잠시 후 다시 사용 가능합니다.",
+            text = "토큰이 만료되었습니다.\n다시 로그인하거나, 관리자에게 문의하여 주세요.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Start,
             modifier = Modifier.padding(top = 16.dp), // 제목과 설명 사이의 간격 조정
@@ -72,7 +70,7 @@ fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navCon
             Button(
                 onClick = {
                     //
-                    navController.navigate("main")
+                    navController.navigate("login")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                 modifier = Modifier
@@ -80,7 +78,7 @@ fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navCon
                     .padding(end = 8.dp) // 오른쪽 버튼과의 간격
                     .shadow(8.dp, shape = RoundedCornerShape(16.dp))
             ) {
-                Text("◀️ 돌아가기", color = Color.White)
+                Text("◀️ 로그아웃", color = Color.White)
             }
 
             Button(
@@ -107,6 +105,6 @@ fun TryLoginFreqScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navCon
 
 @Preview(showBackground = true)
 @Composable
-fun TryLoginFreqScreenPreview() {
-    TryLoginFreqScreen(onClose = { /* Handle close action in preview if needed */ }, onTabSelected = { /* Handle tab selection in preview if needed */ }, navController = rememberNavController(), deleteAccount = {})
+fun TokenOverScreenPreview() {
+    TokenOverScreen(onClose = { /* Handle close action in preview if needed */ }, onTabSelected = { /* Handle tab selection in preview if needed */ }, navController = rememberNavController(), deleteAccount = {})
 }
