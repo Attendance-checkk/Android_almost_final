@@ -27,7 +27,9 @@ import com.example.attendancecheckandroidtest.data.network.ApiService
 import okhttp3.OkHttpClient
 
 @Composable
-fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navController: NavController, deleteAccount: () -> Unit) {
+fun
+
+        RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navController: NavController, deleteAccount: () -> Unit) {
     var isButtonEnabled by remember { mutableStateOf(true) } // 버튼 활성화 상태
     val coroutineScope = rememberCoroutineScope() // CoroutineScope 생성
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
@@ -56,7 +58,7 @@ fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navC
         )
 
         Text(
-            text = "서버 요청 회수가 초과 되었습니다.\n다시 로그인하거나, 관리자에게 문의하여 주세요.",
+            text = "서버 요청 회수가 초과 되었습니다.\n 잠시 후 다시 사용 가능합니다..",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Start,
             modifier = Modifier.padding(top = 16.dp), // 제목과 설명 사이의 간격 조정
@@ -72,7 +74,7 @@ fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navC
             Button(
                 onClick = {
                     //
-                    navController.navigate("login")
+                    navController.navigate("main")
                 },
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red),
                 modifier = Modifier
@@ -80,7 +82,7 @@ fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navC
                     .padding(end = 8.dp) // 오른쪽 버튼과의 간격
                     .shadow(8.dp, shape = RoundedCornerShape(16.dp))
             ) {
-                Text("◀️ 다시 로그인", color = Color.White)
+                Text("◀️ 돌아가기", color = Color.White)
             }
 
             Button(

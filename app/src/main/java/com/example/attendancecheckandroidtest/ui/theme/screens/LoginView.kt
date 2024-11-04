@@ -68,8 +68,8 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
     var selectedDepartment by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") } // 비밀번호 상태 변수
     var confirmPassword by remember { mutableStateOf("") } // 비밀번호 재입력 상태 변수 추가
-    var errorMessage by remember { mutableStateOf("") }
     var showConfirmationDialog by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     // LocalContext 가져오기
     val context = LocalContext.current
@@ -590,7 +590,19 @@ private fun performLogin(
             onClearInputs()
         },
         onError = { error ->
-            onError(error) // 에러 메시지 설정
+            var errorMessage = error
+            if (errorMessage.contains("429")) {  //430은 토큰삭제 하지 않기
+                navController.navigate("TryLoginFreq")
+            }
+            else if(errorMessage.contains("401")){
+                with(sharedPreferences.edit()) {
+                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                    remove("access_token") // 액세스 토큰 삭제
+                    apply()
+                }
+                navController.navigate("TokenOver")
+            }
+
         }
     )
 }

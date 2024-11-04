@@ -161,7 +161,7 @@ class MainActivity : ComponentActivity() {
                         deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
                     )
                 }
-                composable("RequestAPIOver") {
+                composable("RequestAPIOver") { //430
                     RequestAPIOverScreen(
                         onClose = { navController.popBackStack() },
                         onTabSelected = { selectedTabIndex = it },
@@ -169,8 +169,16 @@ class MainActivity : ComponentActivity() {
                         deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
                     )
                 }
-                composable("TryLoginFreq") {
+                composable("TryLoginFreq") {    //429
                     TryLoginFreqScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
+                }
+                composable("TokenOver") {   //401
+                    TokenOverScreen(
                         onClose = { navController.popBackStack() },
                         onTabSelected = { selectedTabIndex = it },
                         navController = navController,

@@ -504,7 +504,8 @@ fun UserInfoRow(label: String, value: String) {
 }
 
 @Composable
-fun LinkButton(text: String, url: String, modifier: Modifier = Modifier) {
+fun
+        LinkButton(text: String, url: String, modifier: Modifier = Modifier) {
     val context = LocalContext.current
 
     Button(
