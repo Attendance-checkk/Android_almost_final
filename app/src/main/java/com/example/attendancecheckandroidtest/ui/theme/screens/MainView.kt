@@ -86,8 +86,8 @@ fun MainView(
                             apply()
                         }
                         navController.navigate("Duplicate")
-                    } else if (errorMessage.contains("430")) {  //430dms
-                        navController.navigate("TryLoginFreq")
+                    } else if (errorMessage.contains("430")) {  //430
+                        navController.navigate("RequestAPIOver")
                     } else {
                         errorMessage = "오류가 발생하였습니다."
                     }
@@ -170,41 +170,43 @@ fun MainView(
                             modifier = Modifier.fillMaxSize(),
                             textAlign = TextAlign.Center
                         )
-                    } else if (errorMessage.isNotEmpty()) {
-                        if (accessToken != null) {
-                            if (errorMessage.contains("401")) {
-                                with(sharedPreferences.edit()) {
-                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                                    remove("access_token") // 액세스 토큰 삭제
-                                    apply()
-                                }
-                                navController.navigate("TokenOver")
-                            } else if (errorMessage.contains("409")) {
-                                with(sharedPreferences.edit()) {
-                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                                    remove("access_token") // 액세스 토큰 삭제
-                                    apply()
-                                }
-                                navController.navigate("DeleteByAdmin")
-                            } else if (errorMessage.contains("412")) {
-                                with(sharedPreferences.edit()) {
-                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                                    remove("access_token") // 액세스 토큰 삭제
-                                    apply()
-                                }
-                                navController.navigate("Duplicate")
-                            } else if (errorMessage.contains("430")) {      //430은 액세스 토큰 삭제
-                                navController.navigate("TryLoginFreq")
-                            }else{
-//                            Text("정보를 불러오는 데 실패했습니다: $errorMessage", color = Color.Red)
-////                            Text("정보를 불러오는 데 실패했습니다", color = Color.Red)
-                            }
-                        }else {
-                            ////
-                            errorMessage = "액세스 토큰이 없습니다."
-                        }
-
-                    } else {
+                    }
+//                    else if (errorMessage.isNotEmpty()) {
+//                        if (accessToken != null) {
+//                            if (errorMessage.contains("401")) {
+//                                with(sharedPreferences.edit()) {
+//                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+//                                    remove("access_token") // 액세스 토큰 삭제
+//                                    apply()
+//                                }
+//                                navController.navigate("TokenOver")
+//                            } else if (errorMessage.contains("409")) {
+//                                with(sharedPreferences.edit()) {
+//                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+//                                    remove("access_token") // 액세스 토큰 삭제
+//                                    apply()
+//                                }
+//                                navController.navigate("DeleteByAdmin")
+//                            } else if (errorMessage.contains("412")) {
+//                                with(sharedPreferences.edit()) {
+//                                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+//                                    remove("access_token") // 액세스 토큰 삭제
+//                                    apply()
+//                                }
+//                                navController.navigate("Duplicate")
+//                            } else if (errorMessage.contains("430")) {      //430은 액세스 토큰 삭제
+//                                navController.navigate("TryLoginFreq")
+//                            }else{
+////                            Text("정보를 불러오는 데 실패했습니다: $errorMessage", color = Color.Red)
+//////                            Text("정보를 불러오는 데 실패했습니다", color = Color.Red)
+//                            }
+//                        }else {
+//                            ////
+//                            errorMessage = "액세스 토큰이 없습니다."
+//                        }
+//
+//                    }
+                    else {
                         HomeScreen(
                             events = events,
                             context = context,

@@ -594,14 +594,7 @@ private fun performLogin(
             if (errorMessage.contains("429")) {  //430은 토큰삭제 하지 않기
                 navController.navigate("TryLoginFreq")
             }
-            else if(errorMessage.contains("401")){
-                with(sharedPreferences.edit()) {
-                    putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
-                    remove("access_token") // 액세스 토큰 삭제
-                    apply()
-                }
-                navController.navigate("TokenOver")
-            }
+
 
         }
     )

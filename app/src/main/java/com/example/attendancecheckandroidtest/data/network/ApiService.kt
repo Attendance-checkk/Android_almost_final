@@ -244,8 +244,8 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
         onError: (String) -> Unit // 오류 메시지를 처리하는 콜백 추가
     ) {
         Log.d("FETCH_EVENT_LIST", "Starting to fetch event list...")
-//        val url = "https://univting.cc:9999/user/event/list"
-        val url = "https://univting.cc:9999/401"
+        val url = "https://univting.cc:9999/user/event/list"
+//        val url = "https://univting.cc:9999/430"
 
 
         val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)

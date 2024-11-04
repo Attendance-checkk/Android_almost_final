@@ -58,7 +58,7 @@ fun
         )
 
         Text(
-            text = "서버 요청 회수가 초과 되었습니다.\n 잠시 후 다시 사용 가능합니다..",
+            text = "서버 요청 횟수가 초과 되었습니다.\n 잠시 후 다시 사용 가능합니다.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Start,
             modifier = Modifier.padding(top = 16.dp), // 제목과 설명 사이의 간격 조정
