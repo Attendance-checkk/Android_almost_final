@@ -64,8 +64,8 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
         val accessToken = sharedPreferences.getString("access_token", null)
         Log.d("QR_SCAN", "Access Token: $accessToken")
 
-//        val url = "https://univting.cc:9999/user/setting/info"
-                val url = "https://univting.cc:9999/401"
+        val url = "https://univting.cc:9999/user/setting/info"
+//                val url = "https://univting.cc:9999/401"
 
         // GET 요청 생성
         val request = Request.Builder()

@@ -113,6 +113,9 @@ fun QRScreen(navController: NavController) {
 
                         apiService.sendQrCodeToServer(qrCodeValue) { statusCode, message ->
                             isProcessing = false
+                            // statusCode 로그 찍기
+                            Log.d("QRCodeProcessing", "Received status code: $statusCode")
+
                             when (statusCode) {
                                 200 -> {
                                     alertTitle = "인식이 완료되었습니다!"
@@ -123,6 +126,10 @@ fun QRScreen(navController: NavController) {
                                     alertBody = "인식한 코드는 다시 인식할 수 없어요 🥲"
                                 }
                                 451 -> {
+                                    alertTitle = "코드 형식이 맞지 않습니다!"
+                                    alertBody = "코드가 이상한 것 같아요 🤔"
+                                }
+                                404 -> {
                                     alertTitle = "코드 형식이 맞지 않습니다!"
                                     alertBody = "코드가 이상한 것 같아요 🤔"
                                 }
