@@ -58,7 +58,9 @@ import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.input.key.key
 import androidx.compose.ui.input.key.nativeKeyCode
 import androidx.compose.ui.input.key.onKeyEvent
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
+import java.nio.file.WatchEvent
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -249,28 +251,6 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        // 비밀번호 입력 텍스트 필드
-//        OutlinedTextField(
-//            value = password,
-//            onValueChange = { password = it },
-//            label = { Text("비밀번호를 입력해주세요") },
-//            shape = RoundedCornerShape(12.dp),
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(70.dp)
-//                .padding(top = 5.dp)
-//                .onKeyEvent { keyEvent ->
-//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
-//                        focusManager.clearFocus()
-//                        true
-//                    } else {
-//                        false
-//                    }
-//                },
-//            visualTransformation = PasswordVisualTransformation(),
-//            isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
-//            singleLine = true
-//        )
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
@@ -289,10 +269,21 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
                     }
                 },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // 아스키 키보드 설정
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii), // 아스키 키보드 설정
             isError = errorMessage.isNotEmpty() && password.isNotEmpty(),
             singleLine = true
         )
+
+        Text(
+            "대•소•특수문자/숫자 포함 8자리 이상 작성해주세요!",
+            style = MaterialTheme.typography.bodySmall,
+            modifier = Modifier
+                .align(Alignment.Start)
+                .padding(start = 5.dp)
+                .padding(top = 5.dp),
+            color = MaterialTheme.colorScheme.onSurface
+        )
+
 
         Text(
             "비밀번호 재확인",
@@ -304,29 +295,6 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
             color = MaterialTheme.colorScheme.onSurface
         )
 
-        // 비밀번호 재입력 텍스트 필드
-//        OutlinedTextField(
-//            value = confirmPassword,
-//            onValueChange = { confirmPassword = it },
-//            label = { Text("비밀번호를 재입력해주세요") },
-//            shape = RoundedCornerShape(12.dp),
-//            modifier = Modifier
-//                .fillMaxWidth()
-//                .height(70.dp)
-//                .padding(top = 5.dp)
-//                .onKeyEvent { keyEvent ->
-//                    if (keyEvent.key.nativeKeyCode == android.view.KeyEvent.KEYCODE_ENTER) {
-//                        focusManager.clearFocus()
-//                        true
-//                    } else {
-//                        false
-//                    }
-//                },
-//            visualTransformation = PasswordVisualTransformation(),
-//            isError = errorMessage.isNotEmpty() && confirmPassword.isNotEmpty(),
-//            singleLine = true
-//        )
-        // 비밀번호 재입력 텍스트 필드 (아스키 키보드)
         OutlinedTextField(
             value = confirmPassword,
             onValueChange = { confirmPassword = it },
@@ -345,7 +313,7 @@ fun LoginView(navController: NavController, isLoggedIn: MutableState<Boolean>, o
                     }
                 },
             visualTransformation = PasswordVisualTransformation(),
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text), // 아스키 키보드 설정
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii), // 아스키 키보드 설정
             isError = errorMessage.isNotEmpty() && confirmPassword.isNotEmpty(),
             singleLine = true
         )

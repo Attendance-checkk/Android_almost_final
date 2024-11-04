@@ -110,7 +110,6 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                 )
             }
 
-            // 시간 섹션
             EventSectionHeader("시간")
             val startTime = iso8601ToDate(event.eventStartTime)
             val endTime = iso8601ToDate(event.eventEndTime)
@@ -124,13 +123,24 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                     border = BorderStroke(1.dp, Color.LightGray),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
-                    Text(
-                        text = "시작 | ${dateToString(it, is24Hour = is24Hour)}",
-                        style = MaterialTheme.typography.bodyMedium,
+                    Row(
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Start,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "시작",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = dateToString(it, is24Hour = is24Hour),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f), // 여유 공간을 차지하게 설정
+                            textAlign = TextAlign.End, // 우측 정렬
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
 
@@ -143,13 +153,24 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
                     border = BorderStroke(1.dp, Color.LightGray),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
                 ) {
-                    Text(
-                        text = "종료 | ${dateToString(it, is24Hour = is24Hour)}",
-                        style = MaterialTheme.typography.bodyMedium,
+                    Row(
                         modifier = Modifier.padding(16.dp),
-                        textAlign = TextAlign.Start,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "종료",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Text(
+                            text = dateToString(it, is24Hour = is24Hour),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.weight(1f), // 여유 공간을 차지하게 설정
+                            textAlign = TextAlign.End, // 우측 정렬
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
                 }
             }
 

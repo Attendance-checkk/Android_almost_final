@@ -21,6 +21,11 @@ import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.TimeZone
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
 import javax.net.ssl.X509TrustManager
@@ -207,7 +212,70 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
         })
     }
 
-    fun sendQrCodeToServer(qrCode: String, callback: (Int, String) -> Unit,) {
+    private fun parseEventTime(eventTime: String): Long {
+        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+        formatter.timeZone = TimeZone.getTimeZone("UTC") // UTC로 설정
+        return formatter.parse(eventTime)?.time ?: 0L
+    }
+    // 한국 시간으로 변환하는 함수
+    private fun convertToKoreanTime(utcTimestamp: Long): Long {
+        val utcDate = Date(utcTimestamp)
+        val koreanTimeZone = TimeZone.getTimeZone("Asia/Seoul")
+        val koreanCalendar = Calendar.getInstance(koreanTimeZone)
+        koreanCalendar.time = utcDate
+        return koreanCalendar.timeInMillis // 한국 시간으로 변환된 밀리초 반환
+    }
+
+    // 로그를 위해 만들어둔 시간 계산함수
+private fun formatTimeToKoreanTime(timestamp: Long): String {
+    val date = Date(timestamp)
+    val formatter = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale("ko", "KR"))
+    formatter.timeZone = TimeZone.getTimeZone("Asia/Seoul") // 한국 시간대 설정
+    return formatter.format(date)
+}
+    fun sendQrCodeToServer(qrCode: String, callback: (Int, String) -> Unit) {
+        fetchEventList(context, { events ->
+            // 현재 시간을 한국 시간으로 변환
+            val currentTime = System.currentTimeMillis()
+            val koreanCurrentTime = convertToKoreanTime(currentTime)
+
+            val event = events.find { it.eventCode == qrCode }
+
+            if (event != null) {
+                val eventStartTime = convertToKoreanTime(parseEventTime(event.eventStartTime))
+                val eventEndTime = convertToKoreanTime(parseEventTime(event.eventEndTime)) // 종료 시간
+
+                // 종료 시간에 20분 추가
+                val eventEndTimeWithBuffer = eventEndTime + 20 * 60 * 1000 // 20분을 밀리초로 변환
+
+                // 로그 추가
+                Log.d("EventTimeCheck", "현재 시간: ${formatTimeToKoreanTime(koreanCurrentTime)}")
+                Log.d("EventTimeCheck", "시작 시간: ${formatTimeToKoreanTime(eventStartTime)}")
+                Log.d("EventTimeCheck", "종료 시간: ${formatTimeToKoreanTime(eventEndTime)}")
+                Log.d("EventTimeCheck", "종료 시간 + 20분: ${formatTimeToKoreanTime(eventEndTimeWithBuffer)}")
+
+                // 현재 시간이 이벤트 시작 시간과 종료 시간 + 20분 사이인지 확인
+                if (koreanCurrentTime in eventStartTime..eventEndTimeWithBuffer) {
+                    // 유효한 시간 범위
+                    proceedWithQrCode(qrCode, callback)
+                } else {
+                    // 유효하지 않은 시간 범위
+                    callback(400, "현재 시간은 이벤트 시간 범위 밖입니다.")
+                }
+            } else {
+                callback(404, "이벤트를 찾을 수 없습니다.")
+            }
+        }, { errorMessage ->
+            callback(500, errorMessage)
+        })
+    }
+//    private fun parseEventTime(eventTime: String): Long {
+//        val formatter = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+//        return formatter.parse(eventTime)?.time ?: 0L
+//    }
+
+    private fun proceedWithQrCode(qrCode: String, callback: (Int, String) -> Unit) {
+        // 기존의 QR 코드를 서버에 전송하는 로직
         val sharedPreferences = context.getSharedPreferences("MyPrefs", MODE_PRIVATE)
         val accessToken = sharedPreferences.getString("access_token", null) ?: ""
 
@@ -227,11 +295,25 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
 
             override fun onResponse(call: Call, response: Response) {
                 val statusCode = response.code
+                Log.e("statusCode", statusCode.toString())
+
+                val responseBody = response.body?.string() ?: "No response body"
+                Log.d("Response Body2", responseBody)
+
                 val message = when (statusCode) {
                     200 -> "Success"
-                    401 -> "이미 등록된 코드입니다."
-                    402 -> "코드 형식이 맞지 않습니다."
-                    else -> "알 수 없는 오류가 발생했습니다"
+                    452 -> "이미 등록된 코드입니다."
+                    451 -> "코드 형식이 맞지 않습니다."
+                    else -> {
+                        // 여기서 400 상태 코드도 처리
+                        if (callback.toString().contains("400")) {
+                            val callbackVa = callback.toString()
+                            Log.d("Response Body2", callbackVa)
+                            "현재 시간은 이벤트 시간 범위 밖입니다."
+                        } else {
+                            "알 수 없는 오류가 발생했습니다"
+                        }
+                    }
                 }
                 callback(statusCode, message)
             }
@@ -369,3 +451,4 @@ class ApiService(private val context: Context,private val client2: OkHttpClient)
         })
     }
 }
+

@@ -110,6 +110,7 @@ fun QRScreen(navController: NavController) {
                         qrCodeValue = barcode
                         isProcessing = true
 
+
                         apiService.sendQrCodeToServer(qrCodeValue) { statusCode, message ->
                             isProcessing = false
                             when (statusCode) {
@@ -117,17 +118,17 @@ fun QRScreen(navController: NavController) {
                                     alertTitle = "인식이 완료되었습니다!"
                                     alertBody = "스탬프를 찍었어요! 🥳"
                                 }
-                                401 -> {
+                                452 -> {
                                     alertTitle = "이미 인식한 코드입니다."
                                     alertBody = "인식한 코드는 다시 인식할 수 없어요 🥲"
                                 }
-                                402 -> {
+                                451 -> {
                                     alertTitle = "코드 형식이 맞지 않습니다!"
                                     alertBody = "코드가 이상한 것 같아요 🤔"
                                 }
                                 else -> {
-                                    alertTitle = "알 수 없는 오류가 발생했습니다"
-                                    alertBody = "관리자에게 문의해주세요..!"
+                                    alertTitle = "이벤트 시간을 지켜 주세요"
+                                    alertBody = "QR인식 시간이 아닙니다..!"
                                 }
                             }
                             showAlert = true
