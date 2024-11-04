@@ -89,7 +89,7 @@ fun MainView(
                     } else if (errorMessage.contains("430")) {  //430
                         navController.navigate("RequestAPIOver")
                     } else {
-                        errorMessage = "오류가 발생하였습니다."
+                        navController.navigate("Exception")
                     }
 
                 }else {

@@ -185,6 +185,14 @@ class MainActivity : ComponentActivity() {
                         deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
                     )
                 }
+                composable("Exception") {   //401
+                    ExceptionScreen(
+                        onClose = { navController.popBackStack() },
+                        onTabSelected = { selectedTabIndex = it },
+                        navController = navController,
+                        deleteAccount = { /* TODO: 여기서 계정 삭제 */ }
+                    )
+                }
                 composable("menu") {
                     MenuScreen(navController = navController, onTabSelected = { selectedTabIndex = it }, isNotificationEnabled = isNotificationEnabled, deleteAccount = {  })
                 }

@@ -27,7 +27,7 @@ import com.example.attendancecheckandroidtest.data.network.ApiService
 import okhttp3.OkHttpClient
 
 @Composable
-fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navController: NavController, deleteAccount: () -> Unit) {
+fun ExceptionScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navController: NavController, deleteAccount: () -> Unit) {
     var isButtonEnabled by remember { mutableStateOf(true) } // 버튼 활성화 상태
     val coroutineScope = rememberCoroutineScope() // CoroutineScope 생성
     var showDeleteConfirmationDialog by remember { mutableStateOf(false) }
@@ -49,14 +49,14 @@ fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navC
         verticalArrangement = Arrangement.SpaceBetween // 위아래로 공간을 분배
     ) {
         Text(
-            text = "⚠️ 서버 요청 회수 초과",
+            text = "⚠️ 잘못된 요청",
             style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.Bold),
             textAlign = TextAlign.Start,
             color = MaterialTheme.colorScheme.onSurface // 다크 모드에 맞는 텍스트 색상
         )
 
         Text(
-            text = "서버 요청 회수가 초과 되었습니다.\n잠시 후 다시 사용 가능합니다.",
+            text = "오류가 발생했습니다.\n잠시 후 다시 사용 가능합니다.",
             style = MaterialTheme.typography.bodyMedium,
             textAlign = TextAlign.Start,
             modifier = Modifier.padding(top = 16.dp), // 제목과 설명 사이의 간격 조정
@@ -109,6 +109,6 @@ fun RequestAPIOverScreen(onClose: () -> Unit, onTabSelected: (Int) -> Unit, navC
 @Composable
 
 
-fun RequestAPIOverPreview() {
-    RequestAPIOverScreen(onClose = { /* Handle close action in preview if needed */ }, onTabSelected = { /* Handle tab selection in preview if needed */ }, navController = rememberNavController(), deleteAccount = {})
+fun ExceptionPreview() {
+    ExceptionScreen(onClose = { /* Handle close action in preview if needed */ }, onTabSelected = { /* Handle tab selection in preview if needed */ }, navController = rememberNavController(), deleteAccount = {})
 }
