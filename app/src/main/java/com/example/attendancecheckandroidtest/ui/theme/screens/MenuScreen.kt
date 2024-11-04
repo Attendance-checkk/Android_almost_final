@@ -115,13 +115,35 @@ fun MenuScreen( navController: NavController,
             } else if (userInfo != null) {
                 UserInfoList(userInfo)
             } else if (errorMessage.isNotEmpty()) {
-                // 에러 처리 로직
                 if (accessToken != null) {
-                    with(sharedPreferences.edit()) {
-                        remove("access_token") // 액세스 토큰 삭제
-                        apply()
+                    if (errorMessage.contains("401")) {
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                        navController.navigate("TokenOver")
+                    } else if (errorMessage.contains("409")) {
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                        navController.navigate("DeleteByAdmin")
+                    } else if (errorMessage.contains("412")) {
+                        with(sharedPreferences.edit()) {
+                            putBoolean("isLoggedIn", false) // 로그인 상태를 false로 설정
+                            remove("access_token") // 액세스 토큰 삭제
+                            apply()
+                        }
+                        navController.navigate("Duplicate")
+                    } else if (errorMessage.contains("430")) {  //430
+                        navController.navigate("RequestAPIOver")
+                    } else {
+                        errorMessage = "오류가 발생하였습니다."
                     }
-                } else {
+
+                }else {
                     errorMessage = "액세스 토큰이 없습니다."
                 }
                 // Navigate based on error message
