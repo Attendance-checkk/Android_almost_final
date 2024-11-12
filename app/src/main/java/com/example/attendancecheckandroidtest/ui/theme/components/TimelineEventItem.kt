@@ -114,11 +114,11 @@ fun EventStatus(event: Event): Pair<String, Color> {
 @Composable
 private fun EventImage(event: Event) {
     val imageName = when (event.eventCode) {
-        "SCHUSWCU1stAF_OpeningCeremony" -> R.drawable.openingceremony
-        "SCHUSWCU1stAF_ProjectPresentationParticipation" -> R.drawable.journalposter
-        "SCHUSWCU1stAF_TalkConcertwithGraduatedStudent" -> R.drawable.talkconcert
-        "SCHUSWCU1stAF_SWCUGameContest" -> R.drawable.gamepad
-        "SCHUSWCU1stAF_IndustryExpertSpecialLecture" -> R.drawable.speciallecture
+        "1stAcademicFesival,OpeningCeremony,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.openingceremony
+        "1stAcademicFesival,ProjectPresentationParticipation,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.journalposter
+        "1stAcademicFesival,GraduatedStudentTalkConcert,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.talkconcert
+        "1stAcademicFesival,MadeByStudentsGameContest,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.gamepad
+        "1stAcademicFesival,IndustrialSpecialistSpecialLecture,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.speciallecture
         "SCHUSWCU1stAF_ClosingCeremony" -> R.drawable.award
         else -> R.drawable.sch_stamp // 기본 이미지
     }

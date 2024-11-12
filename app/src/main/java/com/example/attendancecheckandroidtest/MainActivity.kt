@@ -29,6 +29,10 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+//        if (isFirstLaunch()) {
+//            clearAppData()
+//        }
+
         requestPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             permissions.forEach { (permission, isGranted) ->
                 Log.d("PermissionRequest", "Permission: $permission, Granted: $isGranted")
@@ -42,11 +46,69 @@ class MainActivity : ComponentActivity() {
             }
         }
 
+        handleAppData()
+
         checkAndRequestPermissions()
 
         setContent {
             MyApp()
         }
+    }
+
+    private fun handleAppData() {
+        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+
+        // 앱 설치 여부를 확인하는 플래그
+        val isFirstRun = sharedPreferences.getBoolean("isFirstRun", true)
+
+        if (isFirstRun) {
+            // 첫 실행일 경우 데이터 삭제
+            clearAppData()
+            with(sharedPreferences.edit()) {
+                putBoolean("isFirstRun", false) // 첫 실행 플래그 업데이트
+                apply()
+            }
+        }
+    }
+//
+//    private fun isFirstLaunch(): Boolean {
+//        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+//        // 첫 실행인지 체크하고, 첫 실행이라면 상태를 업데이트
+//        return sharedPreferences.getBoolean("isFirstLaunch", true).also {
+//            if (it) {
+//                sharedPreferences.edit().putBoolean("isFirstLaunch", false).apply()
+//            }
+//        }
+//    }
+
+//    private fun clearAppData() {
+//        val packageName = packageName
+//        val pm = this.packageManager
+//        val appDataDir = this.getExternalFilesDir(null)?.parentFile
+//
+//        // 앱 데이터 디렉토리 삭제
+//        if (appDataDir != null && appDataDir.exists()) {
+//            appDataDir.deleteRecursively()
+//        }
+//
+//        // SharedPreferences 초기화
+//        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+//        sharedPreferences.edit().clear().apply()
+//    }
+
+    private fun clearAppData() {
+        val sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE)
+
+        // 데이터 삭제 전 상태 확인
+        val previousData = sharedPreferences.all // 모든 데이터 가져오기
+        Log.d("ClearAppData", "Previous data before clearing: $previousData")
+
+        // 모든 데이터 삭제
+        sharedPreferences.edit().clear().apply()
+
+        // 데이터 삭제 후 상태 확인
+        val currentData = sharedPreferences.all // 삭제 후 상태 확인
+        Log.d("ClearAppData", "Current data after clearing: $currentData")
     }
 
     private fun checkAndRequestPermissions() {
@@ -77,7 +139,6 @@ class MainActivity : ComponentActivity() {
         val isLoggedIn = remember { mutableStateOf(sharedPreferences.getBoolean("isLoggedIn", false)) }
         var selectedTabIndex by remember { mutableIntStateOf(2) }
         var isTimelineView by remember { mutableStateOf(false) }
-
 
         var isNotificationEnabled by remember {
             mutableStateOf(sharedPreferences.getBoolean("isNotificationEnabled", false))

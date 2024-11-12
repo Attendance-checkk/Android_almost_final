@@ -45,7 +45,7 @@ fun TimelineEventScreenPreview() {
             participants = emptyList() // 참가자 정보
         ),
         Event(
-            eventCode = "SCHUSWCU1stAF_OpeningCeremony",
+            eventCode = "1stAcademicFesival,OpeningCeremony,SWConvergenceCollege,SoonchunhyangUniversity",
             eventName = "개회식",
             description = "SW융합대학의 첫 학술제, 그 시작을 알리는 개회식에 참여하세요!",
             location = "인문과학관 1층 대강당 [6129호]",

@@ -225,11 +225,11 @@ fun EventDetailScreen(eventJson: String, onClose: () -> Unit) {
 // 나머지 함수는 그대로 유지합니다...
 private fun getEventImageResource(eventCode: String): Int {
     return when (eventCode) {
-        "SCHUSWCU1stAF_OpeningCeremony" -> R.drawable.swcuaf_event_1
-        "SCHUSWCU1stAF_ProjectPresentationParticipation" -> R.drawable.swcuaf_event_2
-        "SCHUSWCU1stAF_TalkConcertwithGraduatedStudent" -> R.drawable.swcuaf_event_4
-        "SCHUSWCU1stAF_SWCUGameContest" -> R.drawable.swcuaf_event_3
-        "SCHUSWCU1stAF_IndustryExpertSpecialLecture" -> R.drawable.swcuaf_event_5
+        "1stAcademicFesival,OpeningCeremony,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.swcuaf_event_1
+        "1stAcademicFesival,ProjectPresentationParticipation,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.swcuaf_event_2
+        "1stAcademicFesival,GraduatedStudentTalkConcert,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.swcuaf_event_4
+        "1stAcademicFesival,MadeByStudentsGameContest,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.swcuaf_event_3
+        "1stAcademicFesival,IndustrialSpecialistSpecialLecture,SWConvergenceCollege,SoonchunhyangUniversity" -> R.drawable.swcuaf_event_5
         "SCHUSWCU1stAF_ClosingCeremony" -> R.drawable.swcuaf_event_6
         else -> R.drawable.sch_logo // 기본 이미지
     }

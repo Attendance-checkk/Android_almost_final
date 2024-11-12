@@ -44,7 +44,6 @@ class AlarmReceiver : BroadcastReceiver() {
             .setContentText(intent.getStringExtra("message") ?: "메시지 없음")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setStyle(NotificationCompat.BigTextStyle().bigText(intent.getStringExtra("message") ?: "메시지 없음"))
-            .setContentIntent(PendingIntent.getActivity(context, 0, mainIntent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)) // 클릭 시 MainActivity로 이동
             .setAutoCancel(true) // 클릭 후 알림 자동 제거
 
         // 권한 확인

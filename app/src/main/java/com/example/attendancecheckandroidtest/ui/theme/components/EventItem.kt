@@ -123,11 +123,11 @@ fun EventItem(event: Event, onClick: () -> Unit) {
 @Composable
 private fun EventImage(event: Event) {
     val imageName = when (event.eventCode) {
-        "SCHUSWCU1stAF_OpeningCeremony" -> "openingceremony"
-        "SCHUSWCU1stAF_ProjectPresentationParticipation" -> "journalposter"
-        "SCHUSWCU1stAF_TalkConcertwithGraduatedStudent" -> "talkconcert"
-        "SCHUSWCU1stAF_SWCUGameContest" -> "gamepad"
-        "SCHUSWCU1stAF_IndustryExpertSpecialLecture" -> "speciallecture"
+        "1stAcademicFesival,OpeningCeremony,SWConvergenceCollege,SoonchunhyangUniversity" -> "openingceremony"
+        "1stAcademicFesival,ProjectPresentationParticipation,SWConvergenceCollege,SoonchunhyangUniversity" -> "journalposter"
+        "1stAcademicFesival,GraduatedStudentTalkConcert,SWConvergenceCollege,SoonchunhyangUniversity" -> "talkconcert"
+        "1stAcademicFesival,MadeByStudentsGameContest,SWConvergenceCollege,SoonchunhyangUniversity" -> "gamepad"
+        "1stAcademicFesival,IndustrialSpecialistSpecialLecture,SWConvergenceCollege,SoonchunhyangUniversity" -> "speciallecture"
         else -> "default_image" // 기본 이미지 이름
     }
 
